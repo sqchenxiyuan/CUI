@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			html,body{
+				padding: 0px;
+				margin: 0px;
+				width: 100%;
+				height: 100%;
+			}		
+		</style>
+		<title></title>
+	</head>
+	<body>
+		<div id="sl" style="position: absolute;width: 400px;height: 400px;top: 100px;left: 100px;">
+			
+		</div>
+		<div style="top: 1000px; width: 100px;height: 100px;position: absolute;background-color: black;z-index: 0;"></div>
+	</body>
+	<script src="starts-lines.js"></script>
+	<script>
+		var sl=starts_lines(document.body);
+		sl.init();
+		sl.start();
+	</script>
+</html>
