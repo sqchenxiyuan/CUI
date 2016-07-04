@@ -6,11 +6,19 @@ function starts_lines(dom){
 	var pointslist=null;
 	var drawing=false;
 	var config={
-		pointSize:1.5,
-		lineSiez:1,
-		pointColor:"black",
-		backgroundColor:"white",
-		lineColor:"rgb(0,0,0)"
+		pointSize:1.5,				//点的大小
+		lineSize:1,					//线的大小
+		pointColor:"black",			//点的颜色
+		backgroundColor:"white",	//背景颜色
+		lineColor:"rgb(0,0,0)",		//线的颜色（必须使用rgb（））
+		maxSpeed:50,				//每秒移动距离
+		UPS:120,					//每秒更新次数
+		FPS:60,						//每秒渲染次数
+		speedSlowdown:0.8,			//碰撞边缘减速比例
+		speedaccelerate:0.3,		//与鼠标链接加速比例
+		onepointareasize:100,		//边长方块一个点
+		distanceofPoint:100,		//点与点链接的最大距离
+		distanceofMouse:150			//点与鼠标链接的最大距离
 	};
 	
 	function init(){
@@ -53,18 +61,12 @@ function starts_lines(dom){
 		}
 		
 		
-		
-		
-		//点的列表
+		var areasize=config.onepointareasize;
+		//初始化点
 		pointslist=[];
-		for(var i=0;i<canva.width*canva.height/10000;i++){
-			pointslist[i]=new point({x:(i*100+50)%canva.width,y:(i*100+50)/canva.height*100+50},{x:Math.random()*2-1,y:Math.random()*2-1});
-			//console.log(i);
-			//pointslist[i].speed.x=Math.random()*2-1;
-			//pointslist[i].speed.y=Math.random()*2-1;
-			//console.log(pointslist[i].speed.x+"=="+pointslist[i].speed.y);
-			//pointslist[i].position.x=(i*100+50)%canva.width;
-			//pointslist[i].position.y=(i*100+50)/canva.height*100+50;
+		for(var i=0;i<canva.width*canva.height/areasize/areasize;i++){
+			pointslist[i]=new point({x:(i*areasize)%canva.width+areasize/2,
+				y:(i*areasize)/canva.height*areasize+areasize/2});
 		}
 		pointslist.update=function(){
 			for(var i=0;i<this.length;i++){
@@ -77,9 +79,19 @@ function starts_lines(dom){
 	function start(){
 		drawing=true;
 		draw();
+		update();
 	}
 	function stop(){
 		drawing=false;
+	}
+	
+	function setConfig(newconfig){
+		for(var i in config){
+			if(newconfig[i]){
+				config[i]=newconfig[i];
+			}
+		}
+		console.log(config);
 	}
 	
 	function draw(){
@@ -98,56 +110,96 @@ function starts_lines(dom){
 			
 			//划线
 			var colorstrb="rgba"+config.lineColor.substring(3,config.lineColor.length-1)+",";
-			cxt.lineWidth=config.lineSiez;
+			cxt.lineWidth=config.lineSize;
 			for(var j=i+1;j<pointslist.length;j++){
 				var p2=pointslist[j]
 				var d=(p.position.x-p2.position.x)*(p.position.x-p2.position.x)
 				+(p.position.y-p2.position.y)*(p.position.y-p2.position.y);
 				d=Math.sqrt(d);
-				if(d<100){
+				if(d<config.distanceofPoint){
 					cxt.beginPath();
 					cxt.moveTo(p.position.x,p.position.y);
 					cxt.lineTo(p2.position.x,p2.position.y);
-					cxt.strokeStyle=colorstrb+(100-d)/100+")";
+					cxt.strokeStyle=colorstrb+(config.distanceofPoint-d)/config.distanceofPoint+")";
 					cxt.stroke();
 					cxt.closePath();
 				}
 			}
 			
-			var d=(p.position.x-mousepoint.x)*(p.position.x-mousepoint.x)
-				+(p.position.y-mousepoint.y)*(p.position.y-mousepoint.y);
+			var x2=(p.position.x-mousepoint.x)*(p.position.x-mousepoint.x);
+			var y2=(p.position.y-mousepoint.y)*(p.position.y-mousepoint.y);
+			var d=x2+y2;
 			d=Math.sqrt(d);
-			if(d<200){
+			if(d<config.distanceofMouse){
 				cxt.beginPath();
 				cxt.moveTo(p.position.x,p.position.y);
 				cxt.lineTo(mousepoint.x,mousepoint.y);
-				cxt.strokeStyle=colorstrb+(200-d)/200+")";
+				cxt.strokeStyle=colorstrb+(config.distanceofMouse-d)/config.distanceofMouse+")";
 				cxt.stroke();
 				cxt.closePath();
 			}
 		}
 	
+		setTimeout(function(){
+			if(drawing)draw();
+		},1000/config.FPS);
+	};
+	function update(){
 		
+		for(var i=0;i<pointslist.length;i++){
+			var p=pointslist[i];
+			
+			var x2=(p.position.x-mousepoint.x)*(p.position.x-mousepoint.x);
+			var y2=(p.position.y-mousepoint.y)*(p.position.y-mousepoint.y);
+			var d=x2+y2;
+			d=Math.sqrt(d);
+			if(d<config.distanceofMouse){
+				var bi=(config.distanceofMouse-d)/config.distanceofMouse;
+				var addspeed=config.speedaccelerate*config.maxSpeed*bi*bi/config.UPS;
+				p.speed.x+=addspeed/d*(mousepoint.x-p.position.x);
+				p.speed.y+=addspeed/d*(mousepoint.y-p.position.y);
+			}
+		}
+		
+		pointslist.update();
 		
 		setTimeout(function(){
-			pointslist.update();
-			if(drawing)draw();
-		},20);
-	};
-	
-	//每个点的属性
-	var point=function(_position,_speed){
+			if(drawing)update();
+		},1000/config.UPS);
+	}
+	//每个点的构建函数
+	var point=function(_position){
 		this.size=config.pointSize;
 		this.position=_position;
-		this.speed=_speed;
+		this.speed={x:(Math.random()*config.maxSpeed*2-config.maxSpeed)/config.UPS,
+		y:(Math.random()*config.maxSpeed*2-config.maxSpeed)/config.UPS}
 		this.update=function(){
+			var upsspeed=config.maxSpeed/config.UPS;
 			this.position.x+=this.speed.x;
 			if(this.position.x>=canva.width||this.position.x<0){
+				if(this.position.x>=canva.width){
+					this.position.x=canva.width-1;
+				}else{
+					this.position.x=0;
+				}
 				this.speed.x=-this.speed.x;
+				if(Math.abs(this.speed.x)>upsspeed||Math.abs(this.speed.x)>upsspeed){
+					this.speed.x*=config.speedSlowdown;
+					this.speed.x*=config.speedSlowdown;
+				}
 			}
 			this.position.y+=this.speed.y;
 			if(this.position.y>=canva.height||this.position.y<0){
+				if(this.position.y>=canva.height){
+					this.position.y=canva.height-1;
+				}else{
+					this.position.y=0;
+				}
 				this.speed.y=-this.speed.y;
+				if(Math.abs(this.speed.y)>upsspeed||Math.abs(this.speed.y)>upsspeed){
+					this.speed.x*=config.speedSlowdown;
+					this.speed.y*=config.speedSlowdown;
+				}
 			}
 		}
 	}
@@ -156,6 +208,7 @@ function starts_lines(dom){
 	return {
 		init:init,
 		start:start,
-		stop:stop
+		stop:stop,
+		setConfig:setConfig
 	}
 }
