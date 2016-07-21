@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body >
+			<canvas id="board" width="400px" height="300px"  style="top:100px; left: 100px; align-self: center; position: absolute;"></canvas>
+		<script>
+			var strokes=[];
+			var board=document.getElementById('board');
+			var context=board.getContext('2d');
+			context.fillStyle="antiquewhite";
+			context.strokeStyle='#010';
+			context.lineWidth=2;
+			context.lineCap='round';
+			context.fillRect(0,0,500,500);
+			var drawing=false;
+			var storkenum=0;
+			var drawnum=0;
+			
+			var mousedown=function (e){
+				console.log('down!');
+				drawing=true;
+				strokes[storkenum]=[];
+				strokes[storkenum][drawnum]={x:e.offsetX,y:e.offsetY};
+				drawnum++;
+				updatedraw();
+			};
+			var mousemove=function(e){
+				if(drawing){
+					strokes[storkenum][drawnum]={x:e.offsetX,y:e.offsetY};
+					drawnum++;
+					updatedraw();
+					console.log('draw!');
+				}
+			};
+			var mouseup=function(e){
+				//updatedraw();
+				console.log('up!');
+				drawing=false;
+				storkenum++;
+				drawnum=0;
+			};
+			var updatedraw=function(){
+				context.fillStyle="antiquewhite";
+				context.fillRect(0,0,500,500);
+				var l=strokes.length;
+				
+				
+				for(var i=0;i<l;i++){
+					
+					var stroke=strokes[i];
+					var l2=stroke.length;
+					context.beginPath();
+					context.moveTo(stroke[0].x,stroke[0].y);
+					for(var j=1;j<l2;j++){
+						context.lineTo(stroke[j].x,stroke[j].y);
+					}
+					context.stroke();
+					context.closePath();
+				}
+				
+				for(var i=0;i<l;i++){
+					
+					var stroke=strokes[i];
+					var l2=stroke.length;
+					context.beginPath();
+					context.moveTo(stroke[0].x+1,stroke[0].y-1);
+					for(var j=1;j<l2;j++){
+						context.lineTo(stroke[j].x+1,stroke[j].y-1);
+					}
+					context.stroke();
+					context.closePath();
+				}
+				
+				
+				
+				for(var i=0;i<l;i++){
+					context.fillStyle="#000000";
+					var stroke=strokes[i];
+					var l2=stroke.length;
+					drawpoint(stroke[0].x,stroke[0].y);
+					drawpoint(stroke[0].x+1,stroke[0].y-1);
+					for(var j=1;j<l2;j++){
+						drawpoint(stroke[j].x,stroke[j].y);
+						drawpoint(stroke[j].x+1,stroke[j].y-1);
+					}
+				}
+				
+				
+				
+			};
+			var drawpoint=function(a,b){
+				context.beginPath();
+				context.arc(a,b,1,0,Math.PI*2,true);
+				context.closePath();
+				context.fill();
+			};
+			
+			
+			
+			board.addEventListener('mousedown',mousedown);
+			board.addEventListener('mousemove',mousemove);
+			board.addEventListener('mouseup',mouseup);
+			
+	</script>
+	</body>
+</html>
