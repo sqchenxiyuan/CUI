@@ -6,9 +6,12 @@
 	</head>
 	<body >
 			<canvas id="board" width="400px" height="300px"  style="top:100px; left: 100px; align-self: center; position: absolute;"></canvas>
+			<button id="back">撤销</button>
 		<script>
 			var strokes=[];
 			var board=document.getElementById('board');
+			board.style.cursor='crosshair';
+			var button_back=document.getElementById('back');
 			var context=board.getContext('2d');
 			context.fillStyle="antiquewhite";
 			context.strokeStyle='#010';
@@ -20,7 +23,6 @@
 			var drawnum=0;
 			
 			var mousedown=function (e){
-				console.log('down!');
 				drawing=true;
 				strokes[storkenum]=[];
 				strokes[storkenum][drawnum]={x:e.offsetX,y:e.offsetY};
@@ -32,12 +34,10 @@
 					strokes[storkenum][drawnum]={x:e.offsetX,y:e.offsetY};
 					drawnum++;
 					updatedraw();
-					console.log('draw!');
 				}
 			};
 			var mouseup=function(e){
 				//updatedraw();
-				console.log('up!');
 				drawing=false;
 				storkenum++;
 				drawnum=0;
@@ -46,7 +46,6 @@
 				context.fillStyle="antiquewhite";
 				context.fillRect(0,0,500,500);
 				var l=strokes.length;
-				
 				
 				for(var i=0;i<l;i++){
 					
@@ -97,6 +96,13 @@
 				context.closePath();
 				context.fill();
 			};
+			
+			var revoke=function(){
+					strokes.pop();
+					storkenum=strokes.length;
+					updatedraw();
+			};
+			button_back.addEventListener('click',revoke);
 			
 			
 			
