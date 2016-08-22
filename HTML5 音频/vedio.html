@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+		</style>
+	</head>
+	<body>
+        <input type="file" id="uploadedFile"></input>
+        <canvas id="can" width="1024" height="400"></canvas>
+	</body>
+	<script>
+		
+	var AduioPlayer=function(){
+		this.audioContext=null;
+		this.file=null;
+		this.filename=null;
+	};
+	
+	AduioPlayer.prototype={
+		init:function(){
+			this.setaudioContext();
+			this.addEventListen();
+		},
+		setaudioContext:function(){
+			var that=this;
+			that.audioContext=new AudioContext();
+		},
+		addEventListen:function(){
+			var that=this;
+			console.log(that);
+			var fileinput=document.getElementById('uploadedFile');
+			fileinput.addEventListener('change',function(){
+				if(fileinput.files.length!==0){
+					that.file=fileinput.files[0];
+					that.filename=fileinput.files[0].name;
+					var fr = new FileReader();
+					 fr.onload = function(e) { //文件读取完后调用此函数
+					    var fileResult = e.target.result; //这是读取成功得到的结果ArrayBuffer数据
+					    var audioContext = that.audioContext; //从Visualizer得到最开始实例化的AudioContext用来做解码ArrayBuffer
+					    audioContext.decodeAudioData(fileResult, function(buffer) { //解码成功则调用此函数，参数buffer为解码后得到的结果
+					        that.play(audioContext, buffer); //调用_visualize进行下一步处理，此方法在后面定义并实现
+					    }, function(e) { //这个是解码失败会调用的函数
+					        console.log("!哎玛，文件解码失败:(");
+					    });
+					};
+					fr.readAsArrayBuffer(that.file);
+				}
+			});
+		},
+		play:function(audioContext, buffer){
+			var that=this;
+			var audioBufferSouceNode = audioContext.createBufferSource();
+			var analyser = audioContext.createAnalyser();
+			audioBufferSouceNode.connect(analyser);
+			analyser.connect(audioContext.destination);
+			audioBufferSouceNode.buffer = buffer;
+			audioBufferSouceNode.start(0);
+			that.draw(analyser);
+		},
+		draw:function(analyser){
+			var that=this;
+			var canvas=document.getElementById("can");
+			var context=canvas.getContext('2d');
+			context.fillStyle='gainsboro'
+			context.strokeStyle="aqua";
+			context.strokeWidth=1;
+			var x=0;
+			var drawtocan=function(){
+				x=(++x)%10;
+				var arrays = new Uint8Array(analyser.frequencyBinCount);
+				analyser.getByteFrequencyData(arrays);
+//				for(var i=0;i<100;i++){
+//					arrays[i]=0;
+//				}
+				var l=arrays.length;
+				context.fillRect(0,0,1024,400);
+				
+				context.strokeStyle="aqua";
+				for(i=0;i<l;i++){
+					context.beginPath();
+					context.moveTo(i,400);
+					context.lineTo(i,400-arrays[i]);
+					context.stroke();
+				}
+
+//				analyser.getByteTimeDomainData(arrays);
+//				context.strokeStyle="blueviolet";
+//				context.moveTo(0,400-arrays[0]);
+//				context.beginPath();
+//				for(i=1;i<l;i++){
+//					context.lineTo(i,400-arrays[i]);	
+//				}
+//				context.stroke();
+				setTimeout(function(){
+					drawtocan();
+				},50);
+			}
+			drawtocan();
+		}
+	}
+	new AduioPlayer().init();
+	
+	</script>
+</html>
