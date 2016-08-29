@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/style.css" />
+		<script type="text/javascript" src="js/signature_pad.min.js" ></script>
+	</head>
+	<body>
+		<div class="header">
+			文档签署
+			<button id='btn-clear' class="btn-clear" type="button"></button>
+		</div>
+		<div class="center">
+			<div class="signature-board">
+				<canvas id="signature-board-canvas"></canvas>
+			</div>
+		</div>
+		<div class="footer">
+			<button id="btn-light" class="btn-light" type="button"></button>
+			<button id="btn-normal" class="btn-normal" type="button"></button>
+			<button id="btn-bold" class="btn-bold" type="button"></button>
+			<button id="btn-black" class="btn-black" type="button"></button>
+			<button id="btn-blue" class="btn-blue" type="button"></button>
+			<button id="btn-red" class="btn-red" type="button"></button>
+			<button id="btn-complete" class="btn-complete" type="button">完成</button>
+		</div>
+	</body>
+	<script>
+		var canvas=document.getElementById('signature-board-canvas');
+		var signaturePad = new SignaturePad(canvas,{
+			backgroundColor:"#eee"
+		});
+		
+		var lightbtn=document.getElementById('btn-light');
+		var normalbtn=document.getElementById('btn-normal');
+		var boldbtn=document.getElementById('btn-bold');
+		var blackbtn=document.getElementById('btn-black');
+		var bluebtn=document.getElementById('btn-blue');
+		var redbtn=document.getElementById('btn-red');
+		var clearbtn=document.getElementById('btn-clear');
+		var completebtn=document.getElementById('btn-complete');
+		
+		function resizeCanvas() {
+		    // When zoomed out to less than 100%, for some very strange reason,
+		    // some browsers report devicePixelRatio as less than 1
+		    // and only part of the canvas is cleared then.
+		    var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+		    canvas.width = canvas.offsetWidth * ratio;
+		    canvas.height = canvas.offsetHeight * ratio;
+		    canvas.getContext("2d").scale(ratio, ratio);
+		    signaturePad.clear();
+		}
+		window.onresize=resizeCanvas;
+		
+		lightbtn.addEventListener('click',function(){
+			signaturePad.minWidth=0.5*0.7;
+			signaturePad.maxWidth=2.5*0.7;
+		});
+		normalbtn.addEventListener('click',function(){
+			signaturePad.minWidth=0.5;
+			signaturePad.maxWidth=2.5;
+		});
+		boldbtn.addEventListener('click',function(){
+			signaturePad.minWidth=0.5/0.7;
+			signaturePad.maxWidth=2.5/0.7;
+		});
+		blackbtn.addEventListener('click',function(){
+			signaturePad.penColor="black";
+		});
+		bluebtn.addEventListener('click',function(){
+			signaturePad.penColor="blue";
+		});
+		redbtn.addEventListener('click',function(){
+			signaturePad.penColor="red";
+		});
+		clearbtn.addEventListener('click',function(){
+			signaturePad.clear();
+		});
+		completebtn.addEventListener('click',function(){
+			var data=signaturePad.toDataURL();
+			var base64=data.split(',')[1];
+			alert(base64);
+		});
+		
+		window.onload=function(){
+			resizeCanvas();
+			signaturePad.clear();
+		}
+		
+		function resetThicknessimg(){
+			lightbtn.className="btn-light";
+			normalbtn.className="btn-normal";
+			boldbtn.className="btn-bold";
+		}
+		
+		function select_lightbtn(){
+			resetThicknessimg();
+		}
+		
+		
+		
+	</script>
+</html>

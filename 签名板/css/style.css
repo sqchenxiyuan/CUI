@@ -1,0 +1,167 @@
+html,body{
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.header{
+	position: absolute;
+	padding: 0px;
+	margin: 0px;
+	height: 70px;
+	line-height: 70px;
+	text-align: center;
+	color: white;
+	background: lightseagreen;
+	position: relative;
+}
+
+.btn-clear{
+	position: absolute;
+	right: 30px;
+	top: 20px;
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/delete.png) no-repeat center top;
+}
+
+
+
+.center{
+	position: absolute;
+	width: 100%;
+  	top: 90px;
+  	bottom: 70px;
+}
+
+
+
+.signature-board{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.signature-board canvas{
+	position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+
+
+
+
+.footer{
+	position: absolute;
+	bottom: 0px;
+	border-top: 1.5px solid gray;
+	padding-top: 17px;
+	padding-bottom: 3px;
+	height: 30px;
+	width: 100%;
+}
+
+
+
+
+
+
+
+.btn-light{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/light.png) no-repeat center top;
+}
+.btn-light-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/light_select.png) no-repeat center top;
+}
+
+.btn-normal{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/normal.png) no-repeat center top;
+}
+.btn-normal-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/normal_select.png) no-repeat center top;
+}
+
+.btn-bold{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/bold.png) no-repeat center top;
+}
+.btn-bold-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/bold_select.png) no-repeat center top;
+}
+
+
+.btn-black{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/black.png) no-repeat center top;
+}
+.btn-black-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/black_select.png) no-repeat center top;
+}
+
+.btn-blue{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/blue.png) no-repeat center top;
+}
+.btn-blue-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/blue_select.png) no-repeat center top;
+}
+
+.btn-red{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/red.png) no-repeat center top;
+}
+.btn-red-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/red_select.png) no-repeat center top;
+}
+
+
+.btn-complete{
+	position: absolute;
+	top: 10px;
+	right: 30px;
+	width: 60px;
+	height: 30px;
+	background: orange;
+	color: white;
+	border: 0;
+	border-radius: 4px;
+}
