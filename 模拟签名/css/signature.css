@@ -1,0 +1,173 @@
+/*头部样式*/
+.signature-header{
+	position: absolute;
+	padding: 0px;
+	margin: 0px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	color: white;
+	background: rgb(41,171,194);
+	position: relative;
+}
+
+.btn-clear{
+	position: absolute;
+	right: 30px;
+	top: 10px;
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/delete.png) no-repeat center top;
+}
+.btn-back{
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../../签名板/image/chevron-left.png) no-repeat center top;
+}
+
+
+/*中部样式*/
+.signature-center{
+	position: absolute;
+	width: 100%;
+  	top: 70px;
+  	bottom: 70px;
+  	background: white;
+}
+
+.signature-board{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+.signature-board canvas{
+	position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+
+
+
+/*底部样式*/
+.signature-footer{
+	position: absolute;
+	bottom: 0px;
+	border-top: 1.5px solid rgb(171,171,171);
+	padding-top: 17px;
+	padding-bottom: 3px;
+	height: 30px;
+	width: 100%;
+	min-width: 320px;
+}
+
+.btn-complete{
+	position: absolute;
+	top: 10px;
+	right: 30px;
+	width: 60px;
+	height: 30px;
+	background: orange;
+	color: white;
+	border: 0;
+	border-radius: 4px;
+}
+@media screen and (max-width:360px ) {
+	.footer{
+		min-width: 300px;
+	}
+	.btn-complete{
+		right: 10px;
+		width: 40px;
+	}
+}
+
+
+
+
+/*按钮样式*/
+.btn-light{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/light.png) no-repeat center top;
+}
+.btn-light-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/light_select.png) no-repeat center top;
+}
+
+.btn-normal{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/normal.png) no-repeat center top;
+}
+.btn-normal-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/normal_select.png) no-repeat center top;
+}
+
+.btn-bold{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/bold.png) no-repeat center top;
+}
+.btn-bold-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/bold_select.png) no-repeat center top;
+}
+
+
+.btn-black{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/black.png) no-repeat center top;
+}
+.btn-black-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/black_select.png) no-repeat center top;
+}
+
+.btn-blue{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/blue.png) no-repeat center top;
+}
+.btn-blue-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/blue_select.png) no-repeat center top;
+}
+
+.btn-red{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/red.png) no-repeat center top;
+}
+.btn-red-select{
+	width: 30px;
+	height: 30px;
+	border: 0px;
+	background: url(../image/red_select.png) no-repeat center top;
+}
+

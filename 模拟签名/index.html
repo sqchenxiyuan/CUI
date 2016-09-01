@@ -4,18 +4,53 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 		<link rel="stylesheet" href="css/style.css" />
-		<title></title>
+		<link rel="stylesheet" href="css/signature.css" />
+		<script type="text/javascript" src="../签名板/js/signature_pad.min.js" ></script>
+		<title>前端模拟签名 by sqchenxiyaun</title>
 	</head>
 	<body>
-		<div>
-			<div class="header">
-				<p>前端模拟签名</p>
-				<button id="btn-update" class="btn-update">提交</button>
-			</div>
-			<div class="body">
-				<div class="body-tools"></div>
-				<div class="body-content"></div>
+		<div class="header">
+			<p>前端模拟签名</p>
+			<button id="btn-update" class="btn-update">提交</button>
+		</div>
+		<div class="tools">
+			<div id="tool-signature" class="tool-signature">签名</div>
+		</div>
+		<div class="body">
+			<div class="body-content">
+				<div id="page-1" data-page="1" class="content">
+					page1
+				</div>
+				<div id="page-2" data-page="2" class="content">
+					page2
+				</div>
 			</div>
 		</div>
+		<div id="signature" hidden="hidden">
+			<div class="hide"></div>
+			<div class="app-signature">
+				<div class="signature-header">
+					文档签署
+					<button id='btn-back' class="btn-back" type="button"></button>
+					<button id='btn-clear' class="btn-clear" type="button"></button>
+				</div>
+				<div class="signature-center">
+					<div class="signature-board">
+						<canvas id="signature-board-canvas" style="background-color: rgb(242,242,242);"></canvas>
+					</div>
+				</div>
+				<div class="signature-footer">
+					<button id="btn-light" class="btn-light" type="button"></button>
+					<button id="btn-normal" class="btn-normal" type="button"></button>
+					<button id="btn-bold" class="btn-bold" type="button"></button>
+					<button id="btn-black" class="btn-black" type="button"></button>
+					<button id="btn-blue" class="btn-blue" type="button"></button>
+					<button id="btn-red" class="btn-red" type="button"></button>
+					<button id="btn-complete" class="btn-complete" type="button">完成</button>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/signature.js" ></script>
+		<script type="text/javascript" src="js/app.js" ></script>
 	</body>
 </html>
