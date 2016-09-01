@@ -146,6 +146,7 @@ html,body{
 
 /*大签名板样式*/
 #signature{
+	display: none;
 	position: fixed;
 	z-index: 500;
 	width: 100%;
@@ -158,6 +159,7 @@ html,body{
 	background: rgba(0,0,0,0.7);
 }
 .app-signature{
+	z-index: 200;
 	position: absolute;
 	z-index: 502;
 	position: relative;

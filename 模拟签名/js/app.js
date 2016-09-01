@@ -185,33 +185,6 @@ var content={
 };
 
 content.elements=document.getElementsByClassName('content');
-for(var l=0;content.elements[l];l++){
-	var page=content.elements[l];
-	page.addEventListener('mouseover',function(e){
-		if(content.dragendmsg){
-			var elmentX=e.offsetX;
-			var elmentY=e.offsetY;
-			var startoffset=content.dragendmsg.startoffset;
-			
-			var ulX=e.offsetX-startoffset.x;
-			var ulY=e.offsetY-startoffset.y;
-			if(ulX<10) ulX=10;
-			if(ulY<10) ulY=10;
-			
-			var w=page.offsetWidth;
-			var h=page.offsetHeight;
-			if(ulX>w-110) ulX=w-110;
-			if(ulY>h-110) ulY=h-110;
-			
-			var newpad=new signature_pad();
-			content.signature_pads.push(newpad);
-			newpad.init(ulX,ulY);
-			this.appendChild(newpad.element);
-			content.dragendmsg=null;
-		}
-	});
-};
-
 content.getmsg=function(msg){
 	switch(msg.code){
 		case CODES.DRAGSTART:{
@@ -220,16 +193,62 @@ content.getmsg=function(msg){
 			}
 		};break;
 		case CODES.DRAGEND:{
-			content.dragendmsg=msg;
+			var e=msg.event;
 			for(var l=0;content.elements[l];l++){
 				content.elements[l].style.border="";
+				
+				var pos=getPoint(content.elements[l]);
+				var w=content.elements[l].offsetWidth;
+				var h=content.elements[l].offsetHeight;
+				//console.log(e.pageX,pos.x);
+				//console.log(e.pageY,pos.y);
+				if(e.pageX>pos.x&&e.pageX<pos.x+w
+				&&e.pageY>pos.y&&e.pageY<pos.y+h){
+					var offsetX=e.pageX-pos.x;
+					var offsetY=e.pageY-pos.y;
+					console.log(offsetX,offsetY);
+					
+					var startoffset=msg.startoffset;
+	
+					var ulX=offsetX-startoffset.x;
+					var ulY=offsetY-startoffset.y;
+					if(ulX<10) ulX=10;
+					if(ulY<10) ulY=10;
+					
+					
+					if(ulX>w-110) ulX=w-110;
+					if(ulY>h-110) ulY=h-110;
+					
+					var newpad=new signature_pad();
+					content.signature_pads.push(newpad);
+					newpad.init(ulX,ulY);
+					content.elements[l].appendChild(newpad.element);
+				}
+				
 			}
-			setTimeout(function(){
-				content.dragendmsg=null;
-			},10);
+			
+			//console.log(pages);
+			var e=msg.event;
+			var pos=getPoint(e)
+			//console.log(e.pageX-getPoint(content.elements[0]).x);
+			//console.log(e.pageY-getPoint(content.elements[0]).y);
+			
 		};break;
 	}
 };
+//获取坐标点
+function getPoint(e) {
+    var x = e.offsetLeft;
+    var y = e.offsetTop;
+    while (e = e.offsetParent) {
+        x += e.offsetLeft; 
+        y += e.offsetTop;
+    }
+    return {
+    	x:x,
+    	y:y
+    };
+}
 
 
 //每个小签名板类
@@ -298,11 +317,3 @@ signature_pad.prototype={
 		this.element=div;
 	}
 }
-
-
-
-
-
-
-
-

@@ -10,11 +10,11 @@ var signature={
 	signature_pad:null,
 	write:function(signature_pad){
 		this.signature_pad=signature_pad;
-		document.getElementById('signature').hidden=false;
+		document.getElementById('signature').style.display='block';
 		signatureInit();
 	},
 	close:function(){
-		document.getElementById('signature').hidden=true;
+		document.getElementById('signature').style.display='none';
 	},
 	save:function(data){
 		this.signature_pad.sealData=data;
