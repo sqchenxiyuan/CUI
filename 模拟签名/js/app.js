@@ -7,11 +7,10 @@ updatebtn.addEventListener('click',function(){
 	for(l=0;signature_pads[l];l++){
 		if(signature_pads[l].writed){
 			var signature_img=signature_pads[l];
-			
-			var ulX=signature_img.ulX;
-			var ulY=signature_img.ulY;
-			
 			var img=signature_img.element;
+			var ulX=img.offsetLeft;
+			var ulY=img.offsetTop;
+			
 			var w=img.offsetWidth;
 			var h=img.offsetHeight;
 			
@@ -200,8 +199,7 @@ content.getmsg=function(msg){
 				var pos=getPoint(content.elements[l]);
 				var w=content.elements[l].offsetWidth;
 				var h=content.elements[l].offsetHeight;
-				//console.log(e.pageX,pos.x);
-				//console.log(e.pageY,pos.y);
+
 				if(e.pageX>pos.x&&e.pageX<pos.x+w
 				&&e.pageY>pos.y&&e.pageY<pos.y+h){
 					var offsetX=e.pageX-pos.x;
@@ -280,7 +278,7 @@ var signature_pad=function(){
 		img.width=w;
 		img.style.left=left;
 		img.style.top=top;
-		img.draggable=false;
+		img.ondragstart=function(){return false};
 		addDragFun(img);
 		
 		parentE.appendChild(img);
