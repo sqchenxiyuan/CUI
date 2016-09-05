@@ -27,8 +27,8 @@
 			var end=obj.scrollend;
 			var delay=obj.delay;
 			return function(){
-				if(!sign&&start) start();
-				if(sign) clearTimeout(sign);
+				if(!handler&&start) start();
+				if(handler) clearTimeout(handler);
 				if(scroll) scroll();
 				if(end&&delay){
 					handler=setTimeout(function(){
