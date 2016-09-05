@@ -20,22 +20,40 @@
 	<script>
 		
 		
-		var scrollEnd=function(callback,delaytime){
-			var jubing=null;
+		function scrollExtend(obj){
+			var handler=null;
+			var start=obj.scrollstart;
+			var scroll=obj.scrolling;
+			var end=obj.scrollend;
+			var delay=obj.delay;
 			return function(){
-				if(jubing) clearTimeout(jubing);
-				jubing=setTimeout(function(){
-					callback();
-					jubing=null;
-				},delaytime);
+				if(!sign&&start) start();
+				if(sign) clearTimeout(sign);
+				if(scroll) scroll();
+				if(end&&delay){
+					handler=setTimeout(function(){
+						handler=null;
+						end();
+					},delay);
+				}
 			};
 		}
 		
 		
 		var x=0;
 		var time=new Date().getTime();
-		window.onscroll=scrollEnd(function(){
-			console.log(x++,new Date().getTime()-time);
-		},100);
+		
+		window.addEventListener('scroll',scrollExtend({
+			scrollstart:function(){
+				console.log("start");
+			},
+			scrolling:function(){
+				console.log("ing");
+			},
+			scrollend:function(){
+				console.log("end");
+			},
+			delay:300
+		}));
 	</script>
 </html>
