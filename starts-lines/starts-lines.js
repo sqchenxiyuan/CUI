@@ -58,7 +58,7 @@ function starts_lines(dom){
 		//console.log(e.clientY+document.body.scrollTop-this.offsetTop);
 		mousepoint.x=e.clientX+document.body.scrollLeft-canoffset.offsetLeft;
 		mousepoint.y=e.clientY+document.body.scrollTop-canoffset.offsetTop;
-		}
+	};
 
 
 		var areasize=config.onepointareasize;
@@ -72,7 +72,7 @@ function starts_lines(dom){
 			for(var i=0;i<this.length;i++){
 				this[i].update();
 			}
-		}
+		};
 
 	}
 
@@ -101,7 +101,7 @@ function starts_lines(dom){
 
 		for(var i=0;i<pointslist.length;i++){
 			//划点
-			var p=pointslist[i]
+			var p=pointslist[i];
 			cxt.beginPath();
 			cxt.arc(p.position.x,p.position.y,p.size,0,Math.PI*2,true);
 			cxt.fillStyle=config.pointColor;
@@ -112,9 +112,8 @@ function starts_lines(dom){
 			var colorstrb="rgba"+config.lineColor.substring(3,config.lineColor.length-1)+",";
 			cxt.lineWidth=config.lineSize;
 			for(var j=i+1;j<pointslist.length;j++){
-				var p2=pointslist[j]
-				var d=(p.position.x-p2.position.x)*(p.position.x-p2.position.x)
-				+(p.position.y-p2.position.y)*(p.position.y-p2.position.y);
+				var p2=pointslist[j];
+				var d=(p.position.x-p2.position.x)*(p.position.x-p2.position.x)+(p.position.y-p2.position.y)*(p.position.y-p2.position.y);
 				d=Math.sqrt(d);
 				if(d<config.distanceofPoint){
 					cxt.beginPath();
@@ -143,7 +142,7 @@ function starts_lines(dom){
 		setTimeout(function(){
 			if(drawing)draw();
 		},1000/config.FPS);
-	};
+	}
 	function update(){
 
 		for(var i=0;i<pointslist.length;i++){
@@ -172,7 +171,7 @@ function starts_lines(dom){
 		this.size=config.pointSize;
 		this.position=_position;
 		this.speed={x:(Math.random()*config.maxSpeed*2-config.maxSpeed)/config.UPS,
-		y:(Math.random()*config.maxSpeed*2-config.maxSpeed)/config.UPS}
+			y:(Math.random()*config.maxSpeed*2-config.maxSpeed)/config.UPS }
 		this.update=function(){
 			var upsspeed=config.maxSpeed/config.UPS;
 			this.position.x+=this.speed.x;
@@ -201,8 +200,8 @@ function starts_lines(dom){
 					this.speed.y*=config.speedSlowdown;
 				}
 			}
-		}
-	}
+		};
+	};
 
 
 	return {
@@ -210,5 +209,5 @@ function starts_lines(dom){
 		start:start,
 		stop:stop,
 		setConfig:setConfig
-	}
+	};
 }
