@@ -6,25 +6,25 @@ function starts_lines(dom){
 	var pointslist=null;
 	var drawing=false;
 	var config={
-		pointSize:1.5,				//点的大小
-		lineSize:1,					//线的大小
+		pointSize:0.5,				//点的大小
+		lineSize:0.25,					//线的大小
 		pointColor:"black",			//点的颜色
-		backgroundColor:"white",	//背景颜色
+		backgroundColor:"rgb(255,255,255)",	//背景颜色
 		lineColor:"rgb(0,0,0)",		//线的颜色（必须使用rgb（））
-		maxSpeed:50,				//每秒移动距离
+		maxSpeed:40,				//每秒移动距离
 		UPS:120,					//每秒更新次数
-		FPS:60,						//每秒渲染次数
+		FPS:40,						//每秒渲染次数
 		speedSlowdown:0.8,			//碰撞边缘减速比例
-		speedaccelerate:0.3,		//与鼠标链接加速比例
+		speedaccelerate:0,		//与鼠标链接加速比例
 		onepointareasize:100,		//边长方块一个点
 		distanceofPoint:100,		//点与点链接的最大距离
 		distanceofMouse:150			//点与鼠标链接的最大距离
 	};
-	
+
 	function init(){
 		//查看是否已创建过，已创建过先移除
 		if(canva) canva.remove();
-		
+
 		//创建画布
 		canva=document.createElement("canvas");
 		dom.appendChild(canva);
@@ -39,8 +39,8 @@ function starts_lines(dom){
 			canva.height=dom.offsetHeight;
 		}
 		cxt=canva.getContext("2d");
-		
-		
+
+
 		//设置鼠标移动时的坐标
 		mousepoint={x:0,y:0};
 		canoffset=getoffset(canva);
@@ -59,8 +59,8 @@ function starts_lines(dom){
 		mousepoint.x=e.clientX+document.body.scrollLeft-canoffset.offsetLeft;
 		mousepoint.y=e.clientY+document.body.scrollTop-canoffset.offsetTop;
 		}
-		
-		
+
+
 		var areasize=config.onepointareasize;
 		//初始化点
 		pointslist=[];
@@ -73,9 +73,9 @@ function starts_lines(dom){
 				this[i].update();
 			}
 		}
-		
+
 	}
-	
+
 	function start(){
 		drawing=true;
 		draw();
@@ -84,7 +84,7 @@ function starts_lines(dom){
 	function stop(){
 		drawing=false;
 	}
-	
+
 	function setConfig(newconfig){
 		for(var i in config){
 			if(newconfig[i]){
@@ -93,12 +93,12 @@ function starts_lines(dom){
 		}
 		console.log(config);
 	}
-	
+
 	function draw(){
 		cxt.fillStyle=config.backgroundColor;
 		cxt.fillRect(0,0,canva.width,canva.height);
-		
-		
+
+
 		for(var i=0;i<pointslist.length;i++){
 			//划点
 			var p=pointslist[i]
@@ -107,7 +107,7 @@ function starts_lines(dom){
 			cxt.fillStyle=config.pointColor;
 			cxt.fill();
 			cxt.closePath();
-			
+
 			//划线
 			var colorstrb="rgba"+config.lineColor.substring(3,config.lineColor.length-1)+",";
 			cxt.lineWidth=config.lineSize;
@@ -125,7 +125,7 @@ function starts_lines(dom){
 					cxt.closePath();
 				}
 			}
-			
+
 			var x2=(p.position.x-mousepoint.x)*(p.position.x-mousepoint.x);
 			var y2=(p.position.y-mousepoint.y)*(p.position.y-mousepoint.y);
 			var d=x2+y2;
@@ -139,16 +139,16 @@ function starts_lines(dom){
 				cxt.closePath();
 			}
 		}
-	
+
 		setTimeout(function(){
 			if(drawing)draw();
 		},1000/config.FPS);
 	};
 	function update(){
-		
+
 		for(var i=0;i<pointslist.length;i++){
 			var p=pointslist[i];
-			
+
 			var x2=(p.position.x-mousepoint.x)*(p.position.x-mousepoint.x);
 			var y2=(p.position.y-mousepoint.y)*(p.position.y-mousepoint.y);
 			var d=x2+y2;
@@ -160,9 +160,9 @@ function starts_lines(dom){
 				p.speed.y+=addspeed/d*(mousepoint.y-p.position.y);
 			}
 		}
-		
+
 		pointslist.update();
-		
+
 		setTimeout(function(){
 			if(drawing)update();
 		},1000/config.UPS);
@@ -203,8 +203,8 @@ function starts_lines(dom){
 			}
 		}
 	}
-	
-	
+
+
 	return {
 		init:init,
 		start:start,
