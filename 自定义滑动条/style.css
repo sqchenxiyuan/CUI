@@ -1,3 +1,34 @@
-#scroll{
-
+body{
+	margin: 0;
 }
+
+.scroll{
+	height: 500px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.texts{
+	height: 1000px;
+	background: -webkit-linear-gradient(red,green, blue); 
+	background: -o-linear-gradient(red,green, blue); 
+	background: -moz-linear-gradient(red,green, blue); 
+	background: linear-gradient(red,green, blue); 
+}
+
+#mainBox{ 
+	width:400px; 
+	height:500px; 
+	border:1px #bbb solid; 
+	position:relative; 
+	overflow:hidden; 
+	margin:50px auto;
+}
+#content{ 
+	height:2500px; 
+	position:absolute; 
+	left:0; 
+	top:0; 
+	background:url(http://files.jb51.net/file_images/article/201510/20151026113716032.jpg);
+}
+.scrollDiv{ width:18px; position:absolute; top:0; background:#666; border-radius:10px;}
