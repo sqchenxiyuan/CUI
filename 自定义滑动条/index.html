@@ -9,10 +9,51 @@
   <script type="text/javascript" src="example.js" ></script>
 </head>
 <body>
-    <div class="scroll">
-      <div class="content">
-        <div class="texts">123123123</div>
-      </div>
-    </div>
+		<div id="mainW" class="mainW">
+			<div id="scroll" class="scroll">
+	      <div id="content" class="content">
+	        <div class="texts">123123123</div>
+	      </div>
+	    </div>
+	    <div id="scrollDiv" class="scrollDiv">
+	   			<div id="slider" class="slider"></div>
+	   		</div>
+		</div>
+    <script>
+    	var scroll=document.getElementById('scroll');
+    	var content=document.getElementById('content');
+    	
+    	var scrollDiv=document.getElementById('scrollDiv');
+    	var slider=document.getElementById('slider');
+    	
+    	slider.style.height=scroll.clientHeight/content.clientHeight*100+"%";
+    	
+    	document.getElementById('mainW').addEventListener('mousewheel',function(e){
+    		e=e||window.event;
+    		var scrollD=scroll.clientHeight/8;
+    		var offtop;
+    		if(e.wheelDelta>0){//前滚
+  				offtop=content.offsetTop+scrollD;
+  				if(offtop>0){
+  					offtop=0;
+  				}
+    		}else{//后滚
+  				offtop=content.offsetTop-scrollD;
+  				if(offtop<scroll.clientHeight-content.clientHeight){
+  					offtop=scroll.clientHeight-content.clientHeight;
+  				}
+    		}
+    		
+    		content.style.top=offtop+"px";
+    		var topPorp=-content.offsetTop/content.clientHeight;
+    		console.log(content.style.top);
+    		slider.style.top=topPorp*100+"%";
+    	});
+//  	document.addEventListener('DOMMouseScroll',function(){
+//  		console.log(123);
+//  	},true);
+    	
+    	console.log(scroll.clientHeight,content.clientHeight);
+    </script>
 </body>
 </html>

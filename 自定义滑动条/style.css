@@ -2,10 +2,24 @@ body{
 	margin: 0;
 }
 
-.scroll{
+
+.mainW{
+	position: relative;
+	top: 50px;
 	height: 500px;
+	width: 1000px;
+	margin: 0px auto;
+}
+
+.scroll{
+	height: 100%;
 	width: 100%;
 	overflow: hidden;
+}
+
+.content{
+	position: relative;
+	width: 100%;
 }
 
 .texts{
@@ -16,19 +30,23 @@ body{
 	background: linear-gradient(red,green, blue); 
 }
 
-#mainBox{ 
-	width:400px; 
-	height:500px; 
-	border:1px #bbb solid; 
-	position:relative; 
-	overflow:hidden; 
-	margin:50px auto;
-}
-#content{ 
-	height:2500px; 
+
+
+
+.scrollDiv{ 
 	position:absolute; 
-	left:0; 
+	width:18px; 
+	height: 100%;
 	top:0; 
-	background:url(http://files.jb51.net/file_images/article/201510/20151026113716032.jpg);
+	right: -18px;
+	background:#666; 
+	border-radius:10px;
 }
-.scrollDiv{ width:18px; position:absolute; top:0; background:#666; border-radius:10px;}
+.slider{
+	position: absolute;
+	width: 18px;
+	top: 0%;
+	background: red;
+	border-radius:10px;
+}
+
