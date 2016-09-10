@@ -23,7 +23,7 @@ body{
 }
 
 .texts{
-	height: 1000px;
+	height: 2000px;
 	background: -webkit-linear-gradient(red,green, blue); 
 	background: -o-linear-gradient(red,green, blue); 
 	background: -moz-linear-gradient(red,green, blue); 
@@ -38,7 +38,7 @@ body{
 	width:18px; 
 	height: 100%;
 	top:0; 
-	right: -18px;
+	right: -19px;
 	background:#666; 
 	border-radius:10px;
 }
