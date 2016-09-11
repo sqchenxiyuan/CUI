@@ -34,6 +34,7 @@ body{
 
 
 .scrollDiv{ 
+	cursor: pointer;
 	position:absolute; 
 	width:18px; 
 	height: 100%;
