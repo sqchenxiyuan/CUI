@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<button onclick="test.add()">add</button>
+		<button onclick="test.del()">del</button>
+		<button onclick="test.up()">update</button>
+	</body>
+	<script>
+		var TimerRuner=function(delay){
+			
+			var delay=delay||1000;
+			var runing=false;
+			var timeFuns=[];
+			
+			//添加脉冲事件
+			this.addTimeFun=function(timefun){
+				timeFuns.push(timefun);
+			}
+			//添加激发事件
+			this.addActiveFun=function(name,fun){
+				if(this[name]){
+					console.error("there has a function named"+name+"！！");
+					return;
+				}
+				this[name]=function(){
+					fun();
+					if(runing) return;
+					runing=true;
+					run();
+				};
+			}
+			
+			//设置触发间隔时间
+			this.setDelay=function(_delay){
+				delay=_delay;
+			}
+			
+			//手动控制
+			this.stop=function(){
+				runing=false;
+			}
+			this.start=function(){
+				runing=true;
+				run();
+			}
+			
+			var run=function(){
+				var timeFun;
+				for(var l=0;timeFun=timeFuns[l];l++){
+					timeFun();
+				}
+				setTimeout(function(){
+					run();
+				},delay);
+			}
+		}
+		
+		var test=new TimerRuner(1000);
+		test.addActiveFun("add",function(){
+			console.log("add");
+		})
+		test.addActiveFun("add",function(){
+			console.log("add");
+		})
+		test.addActiveFun("del",function(){
+			console.log("del");
+		})
+		test.addActiveFun("up",function(){
+			console.log("up");
+		})
+		
+		test.addTimeFun(function(){
+			console.log("haha");
+		});
+		
+		test.setDelay(1000);
+		
+	</script>
+</html>
