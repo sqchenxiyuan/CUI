@@ -6,9 +6,35 @@
 	</head>
 	<body>
 		<script> 
+		console.log(!!"");
 			//不考虑 老版本的 Internet Explorer （IE5 和 IE6）使用 的ActiveX 对象
 			function AJAX(obj){
+				var reqURL=obj.reqURL;
+				var reqMethod=obj.reqMethod||"post";
+				var reqAsync=obj.reqAsync||true;
+				var reqData=obj.reqData||"";
+				var reqSuccess=obj.reqSuccess;
+				var reqError=obj.reqError;
+				var reqHeader=obj.reqHeader;
 				
+				var req=new XMLHttpRequest();
+				req.onreadystatechange=function(){
+					if(req.readyState==4)
+					{
+						if(req.status==200){
+							if(reqSuccess)reqSuccess(req.responseText);
+						}else{
+							if(reqError)reqError(req.responseText);
+						}
+					}
+				};
+				req.open(reqMethod,reqURL,reqAsync);
+				if(reqHeader){
+					for(var head in reqHeader){
+						req.setRequestHeader(head,reqHeader[head]);
+					}
+				}
+				req.send(reqData);
 			}
 		</script>
 	</body>
