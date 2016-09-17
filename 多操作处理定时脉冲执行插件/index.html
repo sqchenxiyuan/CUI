@@ -9,60 +9,8 @@
 		<button onclick="test3.del()">del</button>
 		<button onclick="test3.up()">update</button>
 	</body>
+	<script type="text/javascript" src='timePulse.js'></script>
 	<script>
-		//定时发送插件
-		var TimerRuner=function(delay){
-		
-			delay=delay||1000;
-			var runing=false;
-			var timeFuns=[];
-		
-			//添加脉冲事件
-			this.addTimeFun=function(timefun){
-				timeFuns.push(timefun);
-			};
-			//添加激发事件
-			this.addActiveFun=function(name,fun){
-				if(this[name]){
-					console.error("there has a function named"+name+"！！");
-					return;
-				}
-				this[name]=function(){
-					fun();
-					if(runing) return;
-					runing=true;
-					run();
-				};
-			};
-		
-			//设置触发间隔时间
-			this.setDelay=function(_delay){
-				delay=_delay;
-			};
-		
-			//手动控制
-			this.stop=function(){
-				runing=false;
-			};
-			this.start=function(){
-				runing=true;
-				run();
-			};
-		
-			var run=function(){
-				var timeFun;
-				for(var l=0;timeFun=timeFuns[l];l++){
-					timeFun();
-				}
-				setTimeout(function(){
-					if(runing) run();
-				},delay);
-			};
-		};
-		
-		
-		
-		
 		//联系人信息
 		var ContactDataSender=function(){
 		  var timerRuner=new TimerRuner();
@@ -78,13 +26,13 @@
 		  timerRuner.addTimeFun(function(){
 		    console.log(123);
 		  });
-		
+
 		  this.add=function(){
 		      timerRuner.add();
 		  };
-		
+
 		};
-		
+
 		var contactDataSender=new ContactDataSender();
 		contactDataSender.add();
 
