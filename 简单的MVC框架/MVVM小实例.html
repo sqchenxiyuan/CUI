@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<input id="test" data-bind='"a":123,"b":123'/><br>
+		1:<p class="test"></p><br>
+		2:<p class="test"></p><br>
+		3:<p class="test"></p><br>
+		 <script>
+		 
+		 console.log('{'+document.getElementById("test").attributes["data-bind"].nodeValue+'}');
+		 console.log(JSON.parse('{'+document.getElementById("test").attributes["data-bind"].nodeValue+'}'));
+		 
+		 </script>
+	</body>
+</html>
