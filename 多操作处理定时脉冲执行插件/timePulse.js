@@ -1,6 +1,6 @@
 //定时发送插件
 var TimerRuner=function(delay){
-
+	
   delay=delay||1000;
   var timeFuns=[];
   var handler=null;
@@ -40,11 +40,11 @@ var TimerRuner=function(delay){
 	};
 
   var run=function(){
-    for(var l=0;timeFuns[l];l++){
-      timeFuns[l]();
-    }
     handler=setTimeout(function(){
-      	run();
+    	for(var l=0;timeFuns[l];l++){
+	      timeFuns[l]();
+	    }
+      run();
     },delay);
   };
 };
