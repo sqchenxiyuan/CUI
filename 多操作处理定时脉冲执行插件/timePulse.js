@@ -2,8 +2,8 @@
 var TimerRuner=function(delay){
 
   delay=delay||1000;
-  var runing=false;
   var timeFuns=[];
+  var handler=null;
 
   //添加脉冲事件
   this.addTimeFun=function(timefun){
@@ -17,8 +17,7 @@ var TimerRuner=function(delay){
     }
     this[name]=function(){
       fun();
-      if(runing) return;
-      runing=true;
+      if(handler) return;
       run();
     };
   };
@@ -30,19 +29,22 @@ var TimerRuner=function(delay){
 
   //手动控制
   this.stop=function(){
-    runing=false;
+  	if(handler) clearTimeout(handler);
   };
   this.start=function(){
-    runing=true;
-    run();
+  	if(!handler) run();
   };
+  this.trigger = function(){
+		if(handler)clearTimeout(handler);
+		run();
+	};
 
   var run=function(){
     for(var l=0;timeFuns[l];l++){
       timeFuns[l]();
     }
-    setTimeout(function(){
-      if(runing) run();
+    handler=setTimeout(function(){
+      	run();
     },delay);
   };
 };
