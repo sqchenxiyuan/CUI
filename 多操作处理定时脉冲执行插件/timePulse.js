@@ -29,7 +29,10 @@ var TimerRuner=function(delay){
 
   //手动控制
   this.stop=function(){
-  	if(handler) clearTimeout(handler);
+  	if(handler){
+  		clearTimeout(handler);
+  		handler=null;
+  	}
   };
   this.start=function(){
   	if(!handler) run();
