@@ -9,7 +9,7 @@ var request = require('request');
 
 
 exports.search=function(wd,callback){
-  console.log("请求中...")
+  console.log("请求中...");
   var out=[];
   var x=0;
   var total=0;
@@ -31,7 +31,7 @@ exports.search=function(wd,callback){
         var title=a.match(/<a[^>]*>((.|\n)*?)<\/a>/g)[0].replace(/<a[^>]*>/,"").match(/^((.|\n)*)(?=(<\/a))/g)[0].replace(/<em>/g,"").replace(/<\/em>/g,"");
         var linkherf=a.match(/href( )*=( )*"http:\/\/www\.baidu\.com\/link?[^"]*"/g)[0].match(/http(.)*(?=")/)[0];
         var data={};
-        data.id=id;
+        data.rank=id;
         data.title=title;
         data.linkherf=linkherf;
         out.push(data);
