@@ -9,7 +9,7 @@ exports.search=function(wd,callback){
   request("http://www.sogou.com/web?query="+encodeURI(wd)+"&page=1", function (error, response, body)
   {
     if (!error && response.statusCode == 200) {
-        var as=body.match(/<h3[^>]* class="(pt|vrTitle)"[^>]*>((.|\n)*?)<a[^>]* target="_blank"[^>]*>((.|\n)*?)<\/a>((.|\n)*?)<\/h3>/g);
+        var as=body.match(/<h3[^>]* class="(pt|vrTitle|vrt)"[^>]*>((.|\n)*?)<a[^>]* target="_blank"[^>]*>((.|\n)*?)<\/a>((.|\n)*?)<\/h3>/g);
         //console.log(as);
         as.forEach(function(a,index){
           var id=index+1;
