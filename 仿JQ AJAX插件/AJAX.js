@@ -7,6 +7,8 @@ function ajax(obj){
 	var reqSuccess=obj.reqSuccess;
 	var reqError=obj.reqError;
 	var reqBefore=obj.reqBefore;
+	var reqUserName=obj.reqUserName||"";
+	var reqUserPassWord=obj.reqUserPassWord||"";
 
 	var req=new XMLHttpRequest();
 	req.onreadystatechange=function(){
@@ -19,12 +21,20 @@ function ajax(obj){
 			}
 		}
 	};
-	req.open(reqMethod,reqURL,reqAsync);
+	req.open(reqMethod,reqURL,reqAsync,reqUserName,reqUserPassWord);
 	if(reqHeader){
 		for(var head in reqHeader){
 			req.setRequestHeader(head,reqHeader[head]);
 		}
 	}
-	if(reqBefore)reqBefore();
+	if(reqBefore)reqBefore(req);
 	req.send(reqData);
+}
+
+function get(url,data,success){
+	ajax({
+		reqURL:url,
+		reqData:JSON.stringify(data),
+		reqSuccess:success
+	});
 }
