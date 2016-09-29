@@ -16,8 +16,14 @@ exports.search=function(wd,callback){
           var id=index+1;
           var title=a.match(/<a[^>]*>((.|\n)*?)<\/a>/g)[0].replace(/(<a[^>]*>|<\/a>|<em>|<\/em>|<img[^>]*>|(<!--(.|\n)*?)-->|\t)/g,"");
           var linkhref=a.match(/<a[^>]*>((.|\n)*?)<\/a>/g)[0].match(/href="((.|\n)*?)(?=")/)[0].replace(/href="/g,"");
-          //console.log(decodeURIComponent(linkhref.split("url=")[1].split("&")[0]));
-          var href=decodeURIComponent(linkhref.split("url=")[1].split("&")[0]);
+          //console.log(linkhref);
+          //console.log(linkhref.search(/url=/g));
+          var href;
+          if(linkhref.search(/url=/g)!=-1){
+            href=decodeURIComponent(linkhref.split("url=")[1].split("&")[0]);
+          }else{
+            href=linkhref;
+          }
           var data={
             rank:id,
             title:title,

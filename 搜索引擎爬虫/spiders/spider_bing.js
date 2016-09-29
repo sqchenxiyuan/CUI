@@ -6,7 +6,7 @@ exports.search=function(wd,callback){
   {
     if (!error && response.statusCode == 200) {
         //console.log(body);
-        var as=body.match(/<ol[^>]* id="b_results"[^>]*>((.|\n)*?)<\/ol>/g)[0].match(/<li[^>]* class="b_(algo|ans)"[^>]*>((.|\n)*?)<\/li>/g);
+        var as=body.match(/<li[^>]* class="b_(algo|ans)[^>]*>((.|\n)*?)<\/li>/g);
         //console.log(as);
         as.forEach(function(a,index){
           //console.log(a.match(/<h2[^>]*>((.|\n)*?)<\/h2>/g)[0].search(/<a[^>]*>((.|\n)*?)<\/a>/g));

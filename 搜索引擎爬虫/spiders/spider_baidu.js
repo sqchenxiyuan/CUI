@@ -6,12 +6,16 @@ exports.search=function(wd,callback){
   var out=[];
   search_page(wd,1,function(data){
     out=data;
-    search_page(wd,2,function(data){
-      data.forEach(function(a){
-        out.push(a);
+    if(out.length<10){
+      search_page(wd,2,function(data){
+        data.forEach(function(a){
+          out.push(a);
+        });
+        callback(out);
       });
+    }else{
       callback(out);
-    });
+    }
   });
 };
 
@@ -22,13 +26,15 @@ function search_page(wd,page,callback){
   request("http://www.baidu.com/s?wd="+encodeURI(wd)+"&pn="+((page-1)*10), function (error, response, body)
   {
     if (!error && response.statusCode == 200) {
-        var h3s=body.match(/<h3[^>]*class="t"[^>]*>((.|\n)*?)<\/h3>/g);
+        var h3s=body.match(/<h3[^>]*class="t( [^>]*)?"[^>]*>((.|\n)*?)<\/h3>/g);
+        //console.log(h3s);
         h3s.forEach(function(a){
+          //console.log(out.length+1);
           //var h3=a.match(/<h3[^>]*>((.|\n)*?)<\/h3>/g)[0];
-          var title=a.match(/<a[^>]*>((.|\n)*?)<\/a>/g)[0].replace(/<a[^>]*>/,"").match(/^((.|\n)*)(?=(<\/a))/g)[0].replace(/(<em>|<\/em>)/g,"");
-          var linkherf=a.match(/href( )*=( )*"http:\/\/www\.baidu\.com\/link?[^"]*"/g)[0].match(/http(.)*(?=")/)[0];
+          var title=a.match(/<a[^>]*>((.|\n)*?)<\/a>/g)[0].replace(/<a[^>]*>/,"").match(/^((.|\n)*)(?=(<\/a))/g)[0].replace(/(<em>|<\/em>|<font[^>]*>|<\/font>|\n)/g,"");
+          var linkherf=a.match(/href( )*=( )*"http:\/\/www\.baidu\.com\/[^"]*"/g)[0].match(/http(.)*(?=")/)[0];
           var data={};
-          data.rank=out.length-1;
+          data.rank=out.length+1;
           data.title=title;
           data.linkherf=linkherf;
           out.push(data);
