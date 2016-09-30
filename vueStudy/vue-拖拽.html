@@ -17,7 +17,7 @@
 <body>
   <div id="hah"
     v-bind:style="{left:left+'px',top:top+'px'}"
-  v-on:mousedown="drag(0,$event)" v-on:mousemove="drag(1,$event)" v-on:mouseup="drag(2)" v-on:mouseout="drag(2)"></div>
+  v-on:mousedown="drag(0,$event)" v-on:mouseup="drag(2)"></div>
   <script src="vue.js"></script>
   <script type="text/javascript">
     var hah=new Vue({
@@ -33,7 +33,9 @@
           var startY;
           var startTop;
           var startLeft;
+
            return function(i,e){
+             var that=this;
             switch (i){
               case 0:{
                 drag=true;
@@ -41,18 +43,20 @@
                 startLeft=this.$data.left;
                 startX=e.clientX;
                 startY=e.clientY;
-              };break;
-              case 1:{
-                if(drag){
-                  var endTop=startTop+e.clientY-startY;
-                  var endLeft=startLeft+e.clientX-startX;
-                  this.$data.top=endTop;
-                  this.$data.left=endLeft;
-                }
+                document.addEventListener("mousemove",move);
               };break;
               case 2:{
                 drag=false;
+                document.removeEventListener("mousemove",move);
               };break;
+            }
+            function move(e){
+              if(drag){
+                var endTop=startTop+e.clientY-startY;
+                var endLeft=startLeft+e.clientX-startX;
+                that.$data.top=endTop;
+                that.$data.left=endLeft;
+              }
             }
           }
         }()
