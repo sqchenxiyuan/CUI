@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style media="screen">
+    div{
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div id="hah"
+    v-bind:style="{left:left+'px',top:top+'px'}"
+  v-on:mousedown="drag(0,$event)" v-on:mousemove="drag(1,$event)" v-on:mouseup="drag(2)" v-on:mouseout="drag(2)"></div>
+  <script src="vue.js"></script>
+  <script type="text/javascript">
+    var hah=new Vue({
+      el: '#hah',
+      data: {
+        top:100,
+        left:100
+      },
+      methods:{
+        drag:function(){
+          var drag=false;
+          var startX;
+          var startY;
+          var startTop;
+          var startLeft;
+           return function(i,e){
+            switch (i){
+              case 0:{
+                drag=true;
+                startTop=this.$data.top;
+                startLeft=this.$data.left;
+                startX=e.clientX;
+                startY=e.clientY;
+              };break;
+              case 1:{
+                if(drag){
+                  var endTop=startTop+e.clientY-startY;
+                  var endLeft=startLeft+e.clientX-startX;
+                  this.$data.top=endTop;
+                  this.$data.left=endLeft;
+                }
+              };break;
+              case 2:{
+                drag=false;
+              };break;
+            }
+          }
+        }()
+      }
+    });
+  </script>
+</body>
+</html>
