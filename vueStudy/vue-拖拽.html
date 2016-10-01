@@ -28,7 +28,6 @@
       },
       methods:{
         drag:function(){
-          var drag=false;
           var startX;
           var startY;
           var startTop;
@@ -38,7 +37,6 @@
              var that=this;
             switch (i){
               case 0:{
-                drag=true;
                 startTop=this.$data.top;
                 startLeft=this.$data.left;
                 startX=e.clientX;
@@ -46,7 +44,6 @@
                 document.addEventListener("mousemove",move);
               };break;
               case 2:{
-                drag=false;
                 document.removeEventListener("mousemove",move);
               };break;
             }
