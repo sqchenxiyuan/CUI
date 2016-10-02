@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+  <template id="left-item">
+    <div class="left">
+      <div class="items">
+        <input type="text" v-model="inputmsg" v-on:keyup="updatemsg">
+      </div>
+    </div>
+  </template>
+  <template id="right-item">
+    <div class="right">
+      <div class="show">
+        <ul>
+        </ul>
+      </div>
+    </div>
+  </template>
+  <div class="main" id="main">
+    <left-item v-on:change-msg="getmsg"></left-item>
+    <right-item></right-item>
+  </div>
+  <script src="../vue.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
