@@ -48,12 +48,10 @@
               };break;
             }
             function move(e){
-              if(drag){
                 var endTop=startTop+e.clientY-startY;
                 var endLeft=startLeft+e.clientX-startX;
                 that.$data.top=endTop;
                 that.$data.left=endLeft;
-              }
             }
           }
         }()

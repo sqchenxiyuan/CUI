@@ -12,19 +12,26 @@
     <div class="left">
       <div class="items">
         <input type="text" v-model="inputmsg" v-on:keyup="updatemsg">
+        <a-item v-on:dragend="dragend2"></a-item>
       </div>
     </div>
   </template>
   <template id="right-item">
     <div class="right">
       <div class="show">
-        <ul>
-        </ul>
+        <a-form v-for="a in count" :x.sync="a.x" :y.sync="a.y"></a-form>
       </div>
     </div>
   </template>
+  <template id="a-item">
+    <div class="aitem" v-bind:style="{left:left+'px',top:top+'px'}"></div>
+  </template>
+  <template id="a-form">
+    <div class="form" v-bind:style="{left:x+'px',top:y+'px'}"></div>
+  </template>
   <div class="main" id="main">
-    <left-item v-on:change-msg="getmsg"></left-item>
+    <left-item v-on:updatemsg1="getmsg" v-on:dragend="dragend">
+    </left-item>
     <right-item></right-item>
   </div>
   <script src="../vue.js"></script>
