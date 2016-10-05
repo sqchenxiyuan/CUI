@@ -45,7 +45,7 @@ var aItem=Vue.extend({
        that.$data.top=0;
        that.$data.left=0;
      }
-   },
+   }
 });
 Vue.component("a-item",aItem);
 
@@ -138,7 +138,9 @@ function getPageP(e){
   while(e.offsetParent.offsetParent){
     e=e.offsetParent;
     x+=e.offsetLeft;
+    x-=e.scrollLeft;
     y+=e.offsetTop;
+    y-=e.scrollTop;
   }
   return {
     x:x,
