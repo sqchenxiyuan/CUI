@@ -8,21 +8,6 @@
   <title>Document</title>
 </head>
 <body>
-  <template id="left-item">
-    <div class="left">
-      <div class="items">
-        <input type="text" v-model="inputmsg" v-on:keyup="updatemsg">
-        <a-item v-on:dragend="dragend2"></a-item>
-      </div>
-    </div>
-  </template>
-  <template id="right-item">
-    <div class="right">
-      <div class="show">
-        <a-form v-for="a in count" :x.sync="a.x" :y.sync="a.y"></a-form>
-      </div>
-    </div>
-  </template>
   <template id="a-item">
     <div class="aitem" v-bind:style="{left:left+'px',top:top+'px'}"></div>
   </template>

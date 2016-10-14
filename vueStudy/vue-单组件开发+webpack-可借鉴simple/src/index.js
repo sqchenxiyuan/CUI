@@ -1,3 +1,5 @@
+//import Vue from 'vue';
+
 Vue.config.debug = true;
 
 //可拖拽的插件
@@ -50,60 +52,11 @@ var aItem=Vue.extend({
 Vue.component("a-item",aItem);
 
 //注册左列表
-var leftItem=Vue.extend({
-   template: '#left-item',
-   data:function(){
-     return {
-       inputmsg:"haha"
-     };
-   },
-   methods:{
-     updatemsg:function(){
-       console.log("我促发啦~~");
-       this.$emit('updatemsg1');
-     },
-     dragend2:function(x,y){
-       console.log("dragend!~~items");
-       this.$emit('dragend',x,y);
-     }
-   }
-});
+import leftItem from "./components/left-item.vue";
 Vue.component("left-item",leftItem);
 
-
 //注册右列表
-var rightItem=Vue.extend({
-   template: '#right-item',
-   data:function(){
-     return {
-       count:[],
-     };
-   },
-   mounted:function(){
-     var that=this;
-     this.$parent.$on("updatemsg2",function(){
-      console.log("我听到父组件的召唤了~~");
-     });
-
-     this.$parent.$on("dragend2right",function(x,y){
-      console.log("dragend!~~right");
-      console.log(x,y);
-      var pageP=getPageP(that.$el.getElementsByClassName("show")[0]);
-        console.log(pageP);
-      x=x-pageP.x;
-      y=y-pageP.y;
-      console.log(x,y);
-      if(x>=0&&y>=0){
-        that.$data.count.push({
-          x:x,
-          y:y
-        });
-      }
-     });
-
-
-   },
-});
+import rightItem from "./components/right-item.vue";
 Vue.component("right-item",rightItem);
 
 //注册表单项
@@ -127,23 +80,3 @@ var mainVM=new Vue({
     }
   }
 });
-
-
-
-
-
-function getPageP(e){
-  var x=e.offsetLeft;
-  var y=e.offsetTop;
-  while(e.offsetParent.offsetParent){
-    e=e.offsetParent;
-    x+=e.offsetLeft;
-    x-=e.scrollLeft;
-    y+=e.offsetTop;
-    y-=e.scrollTop;
-  }
-  return {
-    x:x,
-    y:y
-  };
-}
