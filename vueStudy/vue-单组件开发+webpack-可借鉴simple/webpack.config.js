@@ -14,6 +14,7 @@ module.exports = {
         hot: false,
         inline: true,
         grogress: true,
+        port:3000
     },
     resolveLoader: {
       root: path.join(__dirname, 'node_modules'),
