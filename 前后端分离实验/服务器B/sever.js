@@ -41,6 +41,17 @@ app.get("/text1",function(req,res,next){
 });
 
 
+app.post("/post",function(req,res,next){
+    // res.set({
+    //   "Access-Control-Allow-Origin":"*"
+    // });
+    res.contentType('JSON');
+    res.send("{\"123\":123}");
+    res.end();
+});
+
+
+
 app.listen(4000,function(){
 	console.log(' - listening on http://*:'+4000);
 });

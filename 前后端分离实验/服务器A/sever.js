@@ -33,6 +33,8 @@ app.use(function(req, res, next){
 
 app.get("/text1",function(req,res,next){
   request("http://www.cxyblogbiu.com/ajax/articles/1", function (error, response, body){
+
+    
     res.contentType('JSON');
     res.send(body);
     res.end();

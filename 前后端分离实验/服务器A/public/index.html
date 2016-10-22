@@ -9,10 +9,14 @@
 <body>
   hello123!
 </body>
+<script src="http://127.0.0.1:4000/post?callback=132">
+
+</script>
 <script type="text/javascript">
 
 ajax({
-  reqURL:"http://127.0.0.1:4000/text1",
+  reqMethod:"post",
+  reqURL:"http://127.0.0.1:4000/post",
   reqSuccess:function(data){
     console.log(data);
   }
