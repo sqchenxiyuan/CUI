@@ -1,0 +1,13 @@
+{
+  "name": "vendor",
+  "content": {
+    "./node_modules/.0.11.9@process/browser.js": {
+      "id": 1,
+      "meta": {}
+    },
+    "./node_modules/.2.0.3@vue/dist/vue.common.js": {
+      "id": 0,
+      "meta": {}
+    }
+  }
+}

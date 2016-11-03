@@ -1,4 +1,4 @@
-//import Vue from 'vue';
+import Vue from '../node_modules/.2.0.3@vue/dist/vue.js';
 
 Vue.config.debug = true;
 
@@ -70,7 +70,7 @@ Vue.component("a-form",aForm);
 var mainVM=new Vue({
   el:"#main",
   methods:{
-    'getmsg':function(a,b,c){
+    getmsg:function(a,b,c){
       console.log("我听到了子组件的召唤~~");
       this.$emit('updatemsg2');
     },
