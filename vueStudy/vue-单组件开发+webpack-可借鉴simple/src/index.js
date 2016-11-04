@@ -1,4 +1,4 @@
-import Vue from '../node_modules/.2.0.3@vue/dist/vue.js';
+import Vue from 'vue';
 
 Vue.config.debug = true;
 

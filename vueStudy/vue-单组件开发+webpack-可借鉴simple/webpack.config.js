@@ -40,6 +40,11 @@ module.exports = {
           }
         ]
     },
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.js'
+      }
+    },
     plugins: [
      new webpack.DllReferencePlugin({
        context: __dirname,

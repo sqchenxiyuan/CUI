@@ -13,6 +13,11 @@ module.exports = {
     entry: {
         vendor: vendors,
     },
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.js'
+      }
+    },
     plugins: [
         new webpack.DllPlugin({
             path: 'manifest.json',
