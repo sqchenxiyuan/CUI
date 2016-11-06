@@ -1,55 +1,49 @@
 var express=require('express'),
   path=require('path'),
-  bodyParser=require('body-parser'),
-  cookieParser=require('cookie-parser'),
-  session=require('express-session'),
+  bodyParser=require('body-parser');
+var tokens={};
 
 app=express();
-
-// app.set('view engine','ejs');
-// app.set('views',__dirname+'/views');
-// app.set('view options',{layout:false});
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(session({
-  secret:'secret',
-  resave:true,
-  saveUninitialized:false,
-  cookie:{
-    maxAge:1000*60*10 //过期时间设置(单位毫秒)
-  }
-}));
-app.use(function(req, res, next){
-  res.locals.user = req.session.user;
-  var err = req.session.error;
-  res.locals.message = '';
-  if (err) res.locals.message = '<div style="margin-bottom: 20px;color:red;">' + err + '</div>';
+
+app.use(function(req,res,next){
+  res.set({
+    "Access-Control-Allow-Origin":"*"
+  });
   next();
 });
 
-
-app.get("/text1",function(req,res,next){
-    res.set({
-      "Access-Control-Allow-Origin":"*"
+app.post("/api/login",function(req,res,next){
+  if(req.body.name=="123"&&req.body.passwd=="123"){
+    var token=new Date().getTime();
+    tokens[token]=true;
+    res.json({
+      "data":"success",
+      "token": token
     });
-    res.contentType('JSON');
-    res.send("{\"123\":123}");
-    res.end();
+  }else{
+    res.json({
+      error:"no pass"
+    });
+  }
+
 });
 
-
-app.post("/post",function(req,res,next){
-    // res.set({
-    //   "Access-Control-Allow-Origin":"*"
-    // });
-    res.contentType('JSON');
-    res.send("{\"123\":123}");
-    res.end();
+app.get("/api/getdata",function(req,res,next){
+  console.log(req.headers);
+  if(tokens[req.headers.authorization]){
+    res.json({
+      yes:"success"
+    });
+  }else{
+    res.json({
+      error:"no pass"
+    });
+  }
 });
-
 
 
 app.listen(4000,function(){

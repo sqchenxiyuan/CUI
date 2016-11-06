@@ -40,6 +40,53 @@ app.use(function(req, res, next){
   next();
 });
 
+app.post('/login',function(req,res,next){
+  request({
+  method:"post",
+  url:"http://127.0.0.1:4000/api/login",
+  headers:{
+    "content-type":"application/json"
+  },
+  form:{
+    name:req.body.name,
+    passwd:req.body.passwd
+  }}, function (err, response, body){
+    if(err)console.log(err);
+    body=JSON.parse(body);
+    req.session.token=body.token;
+    console.log(req.session.token);
+    res.contentType('JSON');
+    res.send(JSON.stringify({
+      data:body.data
+    }));
+    res.end();
+  });
+});
+
+app.get('/getdata',function(req,res,next){
+  console.log(req.session.token);
+  if(req.session.token){
+    request({
+    method:"get",
+    url:"http://127.0.0.1:4000/api/getdata",
+    headers:{
+      "authorization":req.session.token
+    }}, function (err, response, body){
+      body=JSON.parse(body);
+      if(body.error){
+        res.send("请重新登录");
+        res.end();
+      }else{
+        res.send("DATA!!!");
+        res.end();
+      }
+    });
+  }else {
+    res.send("请先登录");
+    res.end();
+  }
+});
+
 
 app.get('/httpstest',function(req,res,next){
   if(req.protocol === 'https') {
@@ -48,15 +95,6 @@ app.get('/httpstest',function(req,res,next){
   else {
       res.status(200).send('Welcome!');
   }
-});
-
-
-app.get("/text1",function(req,res,next){
-  request("http://www.cxyblogbiu.com/ajax/articles/1", function (error, response, body){
-    res.contentType('JSON');
-    res.send(body);
-    res.end();
-  });
 });
 
 

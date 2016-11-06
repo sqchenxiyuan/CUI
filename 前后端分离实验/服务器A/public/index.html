@@ -7,20 +7,38 @@
   <title>Document</title>
 </head>
 <body>
-  hello123!
+  <button type="button" name="button" onclick="login()">login</button>
+  <button type="button" name="button" onclick="getdata()">getdata</button>
 </body>
-<script src="http://127.0.0.1:4000/post?callback=132">
-
-</script>
 <script type="text/javascript">
 
-ajax({
-  reqMethod:"post",
-  reqURL:"http://127.0.0.1:4000/post",
-  reqSuccess:function(data){
-    console.log(data);
-  }
-})
+function login(){
+  ajax({
+    reqMethod:"post",
+    reqData:JSON.stringify({
+      name:"123",
+      passwd:"123"
+    }),
+    reqHeader:{
+      "content-type":"application/json"
+    },
+    reqURL:"http://127.0.0.1:3000/login",
+    reqSuccess:function(data){
+      console.log(data);
+    }
+  })
+}
+
+function getdata(){
+  ajax({
+    reqMethod:"get",
+    reqURL:"http://127.0.0.1:3000/getdata",
+    reqSuccess:function(data){
+      console.log(data);
+    }
+  })
+}
+
 
 
 function ajax(obj){
