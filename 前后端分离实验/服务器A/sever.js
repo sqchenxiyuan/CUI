@@ -10,7 +10,7 @@ var express=require('express'),
 var privateKey  = fs.readFileSync(__dirname+'/ssl/private.pem', 'utf8');
 var certificate = fs.readFileSync(__dirname+'/ssl/file.crt', 'utf8');
 var credentials = {key: privateKey, cert: certificate};
-
+var config=require("./config.json");
 
 
 
@@ -43,7 +43,7 @@ app.use(function(req, res, next){
 app.post('/login',function(req,res,next){
   request({
   method:"post",
-  url:"http://127.0.0.1:4000/api/login",
+  url:config.path+"/api/login",
   headers:{
     "content-type":"application/json"
   },
@@ -68,7 +68,7 @@ app.get('/getdata',function(req,res,next){
   if(req.session.token){
     request({
     method:"get",
-    url:"http://127.0.0.1:4000/api/getdata",
+    url:config.path+"/api/getdata",
     headers:{
       "authorization":req.session.token
     }}, function (err, response, body){
