@@ -29,6 +29,7 @@ build/Release
 # Dependency directories
 node_modules
 jspm_packages
+.vscode
 
 # Optional npm cache directory
 .npm
@@ -38,3 +39,4 @@ jspm_packages
 
 # no txt
 *.txt
+outputs.js
