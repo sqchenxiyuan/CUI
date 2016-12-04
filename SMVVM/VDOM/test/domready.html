@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <sdfg></sdfg>
+  <img src="https://static.onthehub.com/production/attachments/9/ef1fa776-9534-e511-940e-b8ca3a5db7a1/eca6c9bf-faa3-e511-9413-b8ca3a5db7a1.png" alt="">
+  <ul id='123'>
+
+  </ul>
+</body>
+<script>
+  document.ready=function(fun){
+    var t = setInterval(a,10);//设计一个定时器，循环调用a函数
+    function a(){
+        if(document && document.getElementsByTagName && document.getElementById && document.body)
+        {
+            fun();
+            clearInterval(t);
+        }
+    }
+    };
+
+    document.ready(function(){
+        console.log(1,new Date().getTime());
+    });
+
+
+    window.onload=function(){
+        console.log(2,new Date().getTime());
+    };
+</script>
+
+</html>

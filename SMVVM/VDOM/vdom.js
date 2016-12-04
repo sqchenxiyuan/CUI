@@ -4,17 +4,39 @@ document.ready=function(fun){
   {
       if(document && document.getElementsByTagName && document.getElementById && document.body)
       {
-          fun();
           clearInterval(t);
+          fun();
       }
   }
 };
 
 document.ready(function(){
-  console.log(document.body.children);
+  var vdom=readDom(document.body);
+  console.log(vdom);
 });
 
 
-window.onload=function(){
-  console.log(323);
-};
+function readDom(node){
+    var i;
+
+    var vdom={
+        'tag':node.nodeName,
+        'attributes':null,
+        childrens:null
+    };
+
+    if(node.attributes){
+        if(node.attributes.length)vdom.attributes={};
+        for(i=0;i<node.attributes.length;i++){
+            vdom.attributes[node.attributes[i].nodeName]=node.attributes[i].nodeValue;
+        }
+    }
+
+    
+    if(node.childNodes.length)vdom.childrens=[];
+    for(i=0;i<node.childNodes.length;i++){
+        vdom.childrens.push(readDom(node.childNodes[i]));
+    }
+
+    return vdom;
+}

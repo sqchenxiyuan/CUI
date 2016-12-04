@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <ul id='123'>
+
+  </ul>
+</body>
+<script>
+  console.time('直接修改');
+  var ul=document.getElementById('123');
+  for(var i=0;i<5000;i++){
+    ul.innerHTML+='<li><span>'+i+'</span></li>';
+    // if(i%100==0)console.log(i);
+  }
+  console.timeEnd('直接修改');
+  
+
+  console.time('直接字符串修改');
+  var ul=document.getElementById('123');
+  var htmlstr='';
+  for(var i=0;i<5000;i++){
+    htmlstr+='<li><span>'+i+'</span></li>';
+    // if(i%100==0)console.log(i);
+  }
+  ul.innerHTML=htmlstr;
+  console.timeEnd('直接字符串修改');
+
+  
+  console.time('间接修改');
+  var oul=document.getElementById('123');
+  var nul=oul.cloneNode(true);
+  nul.innerHTML='';
+  for(var i=0;i<5000;i++){
+    var li=document.createElement('li');
+    var span=document.createElement('span');
+    var text=document.createTextNode('');
+    text.appendData('< x   >');
+    span.appendChild(text);
+    li.appendChild(span);
+    nul.appendChild(li);
+  }
+  oul.parentNode.replaceChild(nul,oul);
+  console.timeEnd('间接修改');
+</script>
+</html>
