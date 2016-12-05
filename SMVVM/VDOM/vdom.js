@@ -12,7 +12,9 @@ document.ready=function(fun){
 
 document.ready(function(){
   var vdom=readDom(document.body);
-  console.log(vdom);
+  var ndom=buildDom(vdom);
+  document.body.appendChild(ndom);
+  console.log(ndom);
 });
 
 
@@ -22,8 +24,15 @@ function readDom(node){
     var vdom={
         'tag':node.nodeName,
         'attributes':null,
-        childrens:null
+        'childrens':null,
+        'value':null
     };
+
+    if(node.nodeName.toUpperCase()==='#TEXT'){
+        // if(!node.nodeValue||!/\S/.test(node.nodeValue)) return null;
+        if(!node.nodeValue) return null;
+        vdom.value=node.nodeValue;
+    }
 
     if(node.attributes){
         if(node.attributes.length)vdom.attributes={};
@@ -32,11 +41,37 @@ function readDom(node){
         }
     }
 
-    
     if(node.childNodes.length)vdom.childrens=[];
     for(i=0;i<node.childNodes.length;i++){
-        vdom.childrens.push(readDom(node.childNodes[i]));
+        if(node.childNodes[i].nodeName!='SCRIPT'&&
+        node.childNodes[i].nodeName!='STYLE'){
+            var x=readDom(node.childNodes[i]);
+            if(x)vdom.childrens.push(x);
+        }
+    }
+    return vdom;
+}
+
+
+function buildDom(vdom){
+    var ndom;
+    if(vdom.tag.toUpperCase()==='#TEXT'){
+        ndom=document.createTextNode(vdom.value);
+    }else{
+        ndom=document.createElement(vdom.tag);
+
+        if(vdom.attributes){
+            for(var name in vdom.attributes){
+                ndom.setAttribute(name,vdom.attributes[name]);
+            }
+        }
+
+        if(vdom.childrens){
+            vdom.childrens.forEach(function(a){
+                ndom.appendChild(buildDom(a));
+            });
+        }
     }
 
-    return vdom;
+    return ndom;
 }
