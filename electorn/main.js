@@ -14,10 +14,10 @@ app.on('ready', function(){
   //托盘图标
   tray = new Tray(path.join(__dirname,'./res/img/icon.png'));
   const contextMenu = Menu.buildFromTemplate([
-    {label: 'Item1', type: 'radio'},
-    {label: 'Item2', type: 'radio'},
-    {label: 'Item3', type: 'radio', checked: true},
-    {label: 'Item4', type: 'radio'}
+    {label: 'Item1', type: 'normal',position:'endof=y'},
+    {label: 'Item2', type: 'normal',position:'endof=y'},
+    {label: 'Item3', type: 'normal', position:'endof=x'},
+    {label: 'Exit', type: 'normal',position:'endof=x'}
   ]);
   tray.setToolTip('This is my application.');
   tray.setContextMenu(contextMenu);
