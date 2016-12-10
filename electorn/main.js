@@ -17,11 +17,18 @@ app.on('ready', function(){
     {label: 'Item1', type: 'normal',position:'endof=y'},
     {label: 'Item2', type: 'normal',position:'endof=y'},
     {label: 'Item3', type: 'normal', position:'endof=x'},
-    {label: 'Exit', type: 'normal',position:'endof=x'}
+    {
+      label: 'Exit', 
+      type: 'normal',
+      position:'endof=x',
+      click () {
+        exitAPP();
+      }
+    }
   ]);
   tray.setToolTip('This is my application.');
   tray.setContextMenu(contextMenu);
-
+  tray.on('click',openWindow);
 
 
 
@@ -82,3 +89,8 @@ app.on('activate', function () {
     createWindow();
   }
 });
+
+
+function exitAPP(){
+  app.quit();
+}
