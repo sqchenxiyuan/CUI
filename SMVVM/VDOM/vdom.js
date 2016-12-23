@@ -11,7 +11,7 @@ document.ready=function(fun){
 };
 
 document.ready(function(){
-  var vdom=readDom(document.body);
+  var vdom=readDom(document.getElementById('223'));
   var ndom=buildDom(vdom);
   document.body.appendChild(ndom);
   console.log(ndom);
