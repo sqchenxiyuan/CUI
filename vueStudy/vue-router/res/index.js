@@ -8,7 +8,7 @@ const Bar = { template: '<div>bar</div>' }
 const Baz = { template: '<div>baz</div>' }
 
 const router = new VueRouter({
-  // mode: 'history',
+  mode: 'history',
   routes: [
     { path: '/',
       // a single route can define multiple named components
