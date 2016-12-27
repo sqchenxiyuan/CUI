@@ -7,40 +7,16 @@
   <title>Document</title>
 </head>
 <body>
-  <sdfg></sdfg>
-  <img src="https://static.onthehub.com/production/attachments/9/ef1fa776-9534-e511-940e-b8ca3a5db7a1/eca6c9bf-faa3-e511-9413-b8ca3a5db7a1.png" alt="">
   <ul id='123'>
 
   </ul>
-</body>
-<script>
-  // console.log(document.body.children[0]);
-  // console.log(document.body.children[0].tagName);
-  // console.time('直接修改');
-  // var ul=document.getElementById('123');
-  // for(var i=0;i<1000;i++){
-  //   ul.innerHTML+='<li><span>'+i+'</span></li>';
-  //   if(i%100==0)console.log(i);
-  // }
-  // console.timeEnd('直接修改');
-  //
-  //
-  // console.time('间接修改');
-  // var oul=document.getElementById('123');
-  // var nul=oul.cloneNode(true);
-  // nul.innerHTML='';
-  // for(var i=0;i<1000;i++){
-  //   var li=document.createElement('li');
-  //   var span=document.createElement('span');
-  //   var text=document.createTextNode('');
-  //   text.appendData('< x   >');
-  //   span.appendChild(text);
-  //   li.appendChild(span);
-  //   nul.appendChild(li);
-  // }
-  // oul.parentNode.replaceChild(nul,oul);
-  // console.timeEnd('间接修改');
-</script>
-<script src="./vdom.js" charset="utf-8"></script>
+  <div id='223'>
+    <sdfg data-id="123">asdf</sdfg>
+    <img src="https://static.onthehub.com/production/attachments/9/ef1fa776-9534-e511-940e-b8ca3a5db7a1/eca6c9bf-faa3-e511-9413-b8ca3a5db7a1.png" alt="">
+  </div>
+  <style>
 
+  </style>
+</body>
+<script src="./vdom.js" charset="utf-8"></script>
 </html>
