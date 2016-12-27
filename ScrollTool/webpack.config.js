@@ -3,19 +3,25 @@ var path = require('path');
 var webpack = require('webpack');
 // 模块导入
 module.exports = {
-    devtool: 'source-map-eval',
-    entry: __dirname+'/src/index.js',//入口
+    devtool: '#eval-source-map',
+    entry: __dirname+'/src/test1.js',//入口
     output: {
-        path: path.join(__dirname, './output'),
-        filename: 'index.js',
+        path: path.join(__dirname, './demo/src'),
+        publicPath:"/public/",
+        filename: 'test1.js'
     },
-    module: {
+    module:{
         loaders: [
           {
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             exclude: /node_modules/
           }
         ]
-    }
+    },
+    devServer: {
+      contentBase: "demo/",
+      historyApiFallback: true,
+      noInfo: true
+    },
 };

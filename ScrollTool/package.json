@@ -2,11 +2,16 @@
   "name": "ScrollTool",
   "version": "0.0.1",
   "description": "",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --open --inline --hot"
+  },
   "devDependencies": {
      "babel-core": "^6.0.0",
      "babel-loader": "^6.0.0",
+     "cross-env": "^3.0.0",
      "babel-preset-es2015": "^6.0.0",
-     "webpack": "2.1.0-beta.22"
+     "webpack": "^2.1.0-beta.22",
+     "webpack-dev-server": "^2.1.0-beta.9"
    },
   "author": "",
   "license": "ISC"
