@@ -30,13 +30,44 @@
       if(!(to=this.getAttribute(label))){
         to=this.getAttribute('href');
       }
+      if(URL2ID()===to)return;
       ID2URL(to);
       scrollTo(to);
     }
 
     function scrollTo(to){
       var todom=document.querySelector(to);
-      setScroll(document.body,todom.offsetTop,500);
+      var offsetparent=todom.offsetParent;
+
+      //
+      var x=0,y=0;
+      var e=todom;
+      while(e){
+        console.log(e.offsetTop);
+        x+=e.offsetTop;
+        e=e.offsetParent;
+      }
+
+      e=todom.parentElement;
+      while(e){
+        console.log(e.scrollHeight-e.clientHeight);
+        let h=e.scrollHeight-e.clientHeight;
+        y+=e.scrollHeight-e.clientHeight;
+
+        let bbb;
+        if(x>y){
+          setScroll(e,h,500);
+        }else{
+          setScroll(e,h-y+x,500);
+        }
+
+
+        e=e.parentElement;
+      }
+
+      console.log(x,y);
+      //
+      // setScroll(document.body,todom.offsetTop,500);
     }
 
     function setScroll(dom,to,speed){
@@ -69,7 +100,7 @@
 
     function URL2ID(){
       var hash=location.hash;
-      if(hash.match(reg)[0]){
+      if(hash.match(reg)){
         return hash.match(reg)[0].replace(hashStart,'').replace(hashEnd,'');
       }
       return false;
