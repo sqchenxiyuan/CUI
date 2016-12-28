@@ -11,7 +11,7 @@
 export default {
   data:function(){
     return {
-      inputmsg:"haha"
+      inputmsg:"haha
     };
   },
   methods:{
