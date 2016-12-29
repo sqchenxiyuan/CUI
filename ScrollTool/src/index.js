@@ -39,7 +39,7 @@
       var todom=document.querySelector(to);
       var offsetparent=todom.offsetParent;
 
-      //
+
       var x=0,y=0;
       var e=todom;
       while(e){
@@ -50,24 +50,32 @@
 
       e=todom.parentElement;
       while(e){
-        console.log(e.scrollHeight-e.clientHeight);
-        let h=e.scrollHeight-e.clientHeight;
-        y+=e.scrollHeight-e.clientHeight;
+        let h;
+        if(e===document.body){
+          console.log(e.scrollHeight-e.clientHeight);
+          h=e.scrollHeight-e.parentElement.clientHeight;
+          y+=e.scrollHeight-e.clientHeight;
+        }else{
+          console.log(e.scrollHeight-e.clientHeight);
+          h=e.scrollHeight-e.clientHeight;
+          y+=e.scrollHeight-e.clientHeight;
+        }
 
         let bbb;
         if(x>y){
           setScroll(e,h,500);
         }else{
-          setScroll(e,h-y+x,500);
+          console.log(y-x,"==-=-=",e);
+          setScroll(e,y-x,500);
+          break;
         }
-
-
         e=e.parentElement;
+
       }
 
       console.log(x,y);
       //
-      // setScroll(document.body,todom.offsetTop,500);
+      setScroll(document.body,todom.offsetTop,500);
     }
 
     function setScroll(dom,to,speed){
