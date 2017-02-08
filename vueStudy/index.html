@@ -12,13 +12,23 @@
     {{ message }}
     <button v-on:click="reverseMessage">Reverse Message</button>
     56464564
+
+    <div v-for="(data) of datas">
+      {{data}}
+    </div>
+
   </div>
-  <script src="vue.js"></script>
+  <script src="https://unpkg.com/vue@2.1.8/dist/vue.min.js"></script>
   <script type="text/javascript">
     new Vue({
       el: '#app',
       data: {
-        message:"abcdef     g"
+        message:"abcdef     g",
+        datas:{
+          1:1,
+          2:2,
+          3:3
+        }
       },
       methods:{
         reverseMessage:function(){
