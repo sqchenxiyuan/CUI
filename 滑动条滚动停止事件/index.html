@@ -18,31 +18,32 @@
 		<div class='bg'></div>
 	</body>
 	<script>
-		
-		
-		function scrollExtend(obj){
-			var handler=null;
-			var start=obj.scrollstart;
-			var scroll=obj.scrolling;
-			var end=obj.scrollend;
-			var delay=obj.delay;
-			return function(){
-				if(!handler&&start) start();
+
+
+	function scrollExtend(obj){
+		var handler=null;
+		var start=obj.scrollstart;
+		var scroll=obj.scrolling;
+		var end=obj.scrollend;
+		var delay=obj.delay||200;
+		return function(){
+				var that=this;
+				if(!handler&&start) start.call(that);
 				if(handler) clearTimeout(handler);
-				if(scroll) scroll();
+				if(scroll) scroll.call(that);
 				if(end&&delay){
-					handler=setTimeout(function(){
-						handler=null;
-						end();
-					},delay);
+						handler=setTimeout(function(){
+								handler=null;
+								end.call(that);
+						},delay);
 				}
-			};
-		}
-		
-		
+		};
+	}
+
+
 		var x=0;
 		var time=new Date().getTime();
-		
+
 		window.addEventListener('scroll',scrollExtend({
 			scrollstart:function(){
 				console.log("start");
