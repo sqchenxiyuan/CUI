@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style media="screen">
+    html{
+      background: blue;
+    }
+  </style>
+</head>
+<body>
+  <div id="main">
+      <input type="button" name="" value="打开模态框" @click="openModel">
+      <input type="text" name="" value="awe" onclick="console.log(123)">
+      <modal v-show="modelstate" :autosize="true" @close="closeModel">
+          <h1>asd</h1>
+          <h1>asd</h1>
+          <h1>asd</h1>
+          <h1>asd</h1>
+          <h1>asd</h1>
+          <h1>asd</h1>
+          <h1>asd</h1>
+      </modal>
+  </div>
+  <script src="bundle.js" charset="utf-8"></script>
+</body>
+</html>
