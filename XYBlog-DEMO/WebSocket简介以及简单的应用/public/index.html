@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>websokect简易聊天室</title>
+  <style>
+    .messageBox{
+      background: lightslategrey;
+    }
+
+    p{
+      font-size: 16px;
+      margin: 5px;
+    }
+
+    .messageBox-sys{
+      text-align: center;
+      color:yellow
+    }
+
+    .messageBox-other{
+      text-align: left;
+      color:black;
+    }
+
+    .messageBox-my{
+      text-align: right;
+      color:white;
+    }
+    
+    input{
+      height: 20px;
+      margin: 3px;
+      border: 1px;
+    }
+
+  </style>
+</head>
+<body>
+  <div style="width:60%;margin:0 auto;background: grey">
+    <div id="messageBox" class="messageBox">
+    </div>
+    <div class="control">
+      <div style="margin: auto;width: 80%;position: relative">
+        <input id="message" style="width: 70%" type="" name="" placeholder="输入聊天内容" value="">
+        <input id="btn-send" style="width:20%" type="button" value="发送">
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var ws=new WebSocket('ws://127.0.0.1:3000/');
+    ws.onopen=function(event){
+      console.log('连接成功');
+
+      ws.onmessage=function(event){
+        var data=JSON.parse(event.data);
+        var type=data.type||0;
+        var msg=data.msg||'';
+        var date=data.date||new Date();
+
+        var p=document.createElement('p');
+        p.innerHTML=msg;
+
+        switch (type){
+          case 0:p.className="messageBox-sys";break;
+          case 1:p.className="messageBox-other";break;
+          default:p.className="messageBox-sys";
+        }
+
+        document.getElementById('messageBox').appendChild(p);
+      }
+
+      ws.onclose=function(event){
+        console.log('连接关闭');
+      }
+
+    };
+    ws.onerror=function(event){
+       console.log('连接出错');
+    };
+
+
+    document.getElementById('btn-send').addEventListener('click',sendMessage);
+    function sendMessage(){
+      if(ws.readyState!==1){
+        alert('连接为建立');
+        return;
+      }
+
+      var msg=document.getElementById('message').value;
+      ws.send(JSON.stringify({
+        msg:msg,
+        date:new Date().getTime()
+      }));
+
+      var p=document.createElement('p');
+      p.innerHTML=msg;
+      p.className="messageBox-my";
+      document.getElementById('messageBox').appendChild(p);
+    }
+
+
+  </script>
+</body>
+</html>
