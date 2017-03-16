@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>webWorker异步处理DEMO</title>
+</head>
+<body>
+    <p>time:</p>
+    <p></p>
+</body>
+<script src="shared.js" charset="utf-8"></script>
+<script type="text/javascript">
+
+    // console.time('启动页面');
+    //
+    // function add5billion(){
+    //     var x=0;
+    //     for(var i=0;i<1000000000;i++){
+    //         x++;
+    //         x++;
+    //         x++;
+    //         x++;
+    //         x++;
+    //     }
+    //     return x;
+    // }
+    // add5billion();
+    //
+    // console.timeEnd('启动页面');//启动页面: 19527.460ms
+
+    if(Worker){
+
+        // console.time('启动页面');
+        //
+        // let worker = new Worker('worker-self.js');
+        //
+        // worker.onerror=function(e){
+        //     console.log('错误对象',e);
+        // }
+        //
+        // worker.onmessage=function(e){
+        //     console.log(e.data);
+        // }
+        //
+        // worker.postMessage('123');
+        //
+        // setTimeout(()=>{
+        //     worker.terminate();
+        //     worker.postMessage('223');
+        // },1000)
+
+        // console.timeEnd('启动页面');
+
+        //////////////////////////////////////////////////
+
+        // let worker = new Worker('worker-transferList.js');
+        //
+        // let a={x:1};
+        //
+        // let obj={x:a,y:a,z:{x:1}}
+        //
+        // // let bufArr=new ArrayBuffer(100);
+        // //
+        // // let obj={x:bufArr,y:bufArr}
+        //
+        // // console.log(bufArr.byteLength);
+        // //
+        // // worker.onmessage=function(e){
+        // //     console.log(e.data);
+        // //     console.log(bufArr.byteLength);
+        // // }
+        //
+        // worker.postMessage(obj);
+
+        // console.log(bufArr.byteLength);
+
+        /////////////////////////////////////////////////
+
+
+
+
+
+
+    }else{
+        console.error('不支持webWorker')
+    }
+</script>
+</html>

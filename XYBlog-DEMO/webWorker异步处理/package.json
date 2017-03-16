@@ -1,0 +1,10 @@
+{
+  "name": "WebSocket简介以及简单的应用",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "webpack"
+  },
+  "dependencies": {
+    "express":"4.15.0"
+  }
+}

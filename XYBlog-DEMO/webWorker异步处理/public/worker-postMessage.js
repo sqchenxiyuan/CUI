@@ -1,0 +1,1 @@
+postMessage("I'm Worker");
