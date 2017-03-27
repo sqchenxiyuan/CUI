@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>websokect简易聊天室</title>
+  <style>
+    .messageBox{
+      background: lightslategrey;
+    }
+
+    p{
+      font-size: 16px;
+      margin: 5px;
+    }
+
+    .messageBox-sys{
+      text-align: center;
+      color:yellow
+    }
+
+    .messageBox-other{
+      text-align: left;
+      color:black;
+    }
+
+    .messageBox-my{
+      text-align: right;
+      color:white;
+    }
+
+    input{
+      height: 20px;
+      margin: 3px;
+      border: 1px;
+    }
+
+  </style>
+</head>
+<body>
+  <div style="width:60%;margin:0 auto;background: grey">
+    <div id="messageBox" class="messageBox">
+    </div>
+    <div class="control">
+      <div style="margin: auto;width: 80%;position: relative">
+        <input id="message" style="width: 70%" type="" name="" placeholder="输入聊天内容" value="">
+        <input id="btn-send" style="width:20%" type="button" value="发送">
+      </div>
+    </div>
+  </div>
+  <script src="client.js" charset="utf-8"></script>
+  <script src="demo.js" charset="utf-8"></script>
+</body>
+</html>
