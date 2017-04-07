@@ -1,4 +1,4 @@
-var wsc=new WsCilent('ws://127.0.0.1:3000/');
+var wsc=new WsCilent('ws://125.67.172.200:3000/');
 
 wsc.listen('message-sys',function(err,data){
     if(err)console.error(err);
@@ -21,7 +21,7 @@ document.getElementById('btn-send').addEventListener('click',sendMessage);
 
 function sendMessage(){
   var msg=document.getElementById('message').value;
-  wsc.post("",{
+  wsc.send("",{
       msg:msg,
       date:new Date().getTime()
   });

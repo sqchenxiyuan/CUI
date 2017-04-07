@@ -5,10 +5,9 @@
 //postonce  传递特定的消息，伴随标记的消息，服务器返回相同标记的信息，只执行一次
 //
 
+class WsCilent{
 
-;(function(){
-
-    function WsCilent(path){
+    constructor(path,options){
         this.listenMap={};
         this.keyMap=[];
         this.dataList=[];
@@ -18,7 +17,7 @@
         if(this.path)this.connect();
     }
 
-    WsCilent.prototype.connect=function(path = this.path){
+    connect(path = this.path){
         if(!window.WebSocket)return false;
         if(this.ws&&this.ws.readyState<=1&&(this.path===path||!path))return;
         this.path=path;
@@ -28,45 +27,9 @@
         let dataList=this.dataList;
 
         this.ws=new WebSocket(path);
-        this.ws.addEventListener('open',event => {
+        let ws=this.ws;
 
-            this.ws.addEventListener('message',event => {
-                let data=event.data;
-
-                try{
-                    data=JSON.parse(data);
-                }catch(e){
-                    console.info(e);
-                    data=event.data;
-                }
-
-                if(data.key&&keyMap[data.key]){
-                    let foo=keyMap[data.key];
-                    keyMap[data.key]=undefined;
-
-                    if(typeof foo === 'function')foo(null,data.data);
-                    return ;
-                }
-
-                if(listenMap[data.type]){
-                    listenMap[data.type].forEach((foo)=>{
-                        if(typeof foo === 'function')foo(null,data.data);
-                    });
-                }
-            });
-
-            this.ws.addEventListener('close',event => {
-                for(let key in keyMap){
-                    if(typeof keyMap[key] === 'function')keyMap[key](event);
-                }
-                keyMap={};
-
-                listenMap.forEach((foolist)=>{
-                    foolist.forEach((foo)=>{
-                        if(typeof foo === 'function')foo(event);
-                    })
-                });
-            });
+        ws.addEventListener('open',event => {
 
             dataList.forEach((data)=>{
               ws.send(data);
@@ -75,7 +38,45 @@
 
         });
 
-        this.ws.addEventListener('error',event => {
+        ws.addEventListener('message',event => {
+            let data=event.data;
+
+            try{
+                data=JSON.parse(data);
+            }catch(e){
+                console.info(e);
+                data=event.data;
+            }
+
+            if(data.key&&keyMap[data.key]){
+                let foo=keyMap[data.key];
+                keyMap[data.key]=undefined;
+
+                if(typeof foo === 'function')foo(null,data.data);
+                return ;
+            }
+
+            if(listenMap[data.type]){
+                listenMap[data.type].forEach((foo)=>{
+                    if(typeof foo === 'function')foo(null,data.data);
+                });
+            }
+        });
+
+        ws.addEventListener('close',event => {
+            for(let key in keyMap){
+                if(typeof keyMap[key] === 'function')keyMap[key](event);
+            }
+            keyMap={};
+
+            listenMap.forEach((foolist)=>{
+                foolist.forEach((foo)=>{
+                    if(typeof foo === 'function')foo(event);
+                })
+            });
+        });
+
+        ws.addEventListener('error',event => {
 
             for(let key in keyMap){
                 if(typeof keyMap[key] === 'function')keyMap[key](event);
@@ -94,7 +95,7 @@
 
     }
 
-    WsCilent.prototype.listen=function(type,fun){
+    listen(type,fun){
         let listenMap=this.listenMap;
 
         if(!listenMap[type])listenMap[type]=[];
@@ -107,7 +108,7 @@
         };
     }
 
-    WsCilent.prototype.post=function(type,data){
+    send(type,data){
         let ws=this.ws;
         let dataList=this.dataList;
 
@@ -124,7 +125,7 @@
         }
     }
 
-    WsCilent.prototype.postonce=function(type,data){
+    vhttp(type,data,callback){
         let ws=this.ws;
         let dataList=this.dataList;
         let keyMap=this.keyMap;
@@ -146,7 +147,7 @@
         keyMap[key]=callback;
     }
 
-    WsCilent.prototype.remove=function(type,fun){
+    remove(type,fun){
         let listenMap=this.listenMap;
 
         if(!listenMap[type])return true;
@@ -158,5 +159,6 @@
         return true;
     }
 
-    window.WsCilent=WsCilent;
-}());
+}
+
+window.WsCilent=WsCilent;

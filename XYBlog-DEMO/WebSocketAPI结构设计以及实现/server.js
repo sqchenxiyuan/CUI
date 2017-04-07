@@ -14,17 +14,7 @@ var io=new ws.Server({server});
 
 var linkarr=[];
 
-io.on('connection',function(client){
-  join(client);
 
-  client.on('message',function(data){
-    sendData(client,JSON.parse(data));
-  });
-  client.on('close',function(data){
-    leave(client);
-  });
-
-});
 
 function join(client){
 
@@ -78,4 +68,77 @@ function sendData(client,data){
     }));
   });
 
+}
+
+class WsServer{
+
+    constructor(){
+        this.connectFoo=[];
+        this.closeFoo=[];
+        this.registMap={};
+        this.registvhttpMap={};
+
+        let ws=new require('ws').Server.apply(this,arguments);
+        this.ws=ws;
+
+        ws.on('connection',function(client){
+
+          this.connectFoo.forEach(foo => foo(client))
+
+          client.on('message',function(data){
+              data=JSON.parse(data);
+              if(data.key!==undefined&&this.registvhttpMap[data.type]){
+                  this.registvhttpMap[data.type].call(new WsReq(data),data.data);
+              }else if(this.registMap[data.type]){
+                  this.registMap[data.type].forEach(foo => foo.call(new WsReq(data),data));
+              }
+          });
+
+          client.on('close',function(data){
+            this.closeFoo.forEach(foo => foo(client))
+          });
+
+
+
+        });
+    }
+
+    connect(foo){
+        this.connectFoo.push(foo);
+    }
+
+    close(foo){
+        this.closeFoo.push(foo);
+    }
+
+    regist(type,foo){
+        if(!this.registMap[type])this.registMap[type]=[];
+        if(this.registMap[type].indexOf(foo))this.registMap[type].push(foo);
+    }
+
+    registvhttp(type,foo){
+        this.registvhttpMap[type]=foo;
+    }
+}
+
+class WsReq{
+
+    constructor(data){
+        this.reqdata=data;
+    }
+
+    send(type,data){
+        data=JSON.stringify({
+            type,
+            data
+        });
+        if(this.reqdata.key!==undefined)data.key=this.reqdata.key;
+
+        try{
+            client.send()
+        }catch(e){
+            console.error(e)
+        }
+
+    }
 }
