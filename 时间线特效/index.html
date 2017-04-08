@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <ul class="timeline">
+        <li>
+            <time datetime="2017:4:8 08:42:00" >
+                <p>2017/4/8</p>
+                <p>08:42:00</p>
+            </time>
+            <div class="timepoint"></div>
+            <div class="timeline-content">asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf</div>
+        </li>
+        <li>
+            <time datetime="2017:4:8 08:42:00" >
+                <p>2017/4/8</p>
+                <p>08:42:00</p>
+            </time>
+            <div class="timepoint"></div>
+            <div class="timeline-content">asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+            asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf</div>
+        </li>
+        <li>
+            <time datetime="2017:4:8 08:42:00" >
+                <p>2017/4/8</p>
+                <p>08:42:00</p>
+            </time>
+            <div class="timepoint"></div>
+            <div class="timeline-content">asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+            asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+    asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf</div>
+        </li>
+        <li>
+            <time datetime="2017:4:8 08:42:00" >
+                <p>2017/4/8</p>
+                <p>08:42:00</p>
+            </time>
+            <div class="timepoint"></div>
+            <div class="timeline-content">asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+            asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+        asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+    asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf</div>
+        </li>
+        <li>
+            <time datetime="2017:4:8 08:42:00" >
+                <p>2017/4/8</p>
+                <p>08:42:00</p>
+            </time>
+            <div class="timepoint"></div>
+            <div class="timeline-content">asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+            asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+        asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+    asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdfasdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf</div>
+        </li>
+        <li>
+            <time datetime="2017:4:8 08:42:00" >
+                <p>2017/4/8</p>
+                <p>08:42:00</p>
+            </time>
+            <div class="timepoint"></div>
+            <div class="timeline-content">asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+            asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+        asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+    asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdfasdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf
+asdf gasd fasd fasdfas dfasdfasdfa sdfasdfasdf asdfasdfasdfasd fasdfasdfa sdf</div>
+        </li>
+    </ul>
+    <style media="screen">
+        .timeline{
+            position: relative;
+            list-style-type:none;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        .timeline::before{
+            content: ' ';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 10px;
+            background: #afdcf8;
+            left: 20%;
+            margin-left: -5px;
+        }
+
+        .timeline li{
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .timeline time{
+            display: block;
+            width: 20%;
+            position: absolute;
+        }
+
+        .timeline time p{
+            text-align: right;
+            padding-right: 20px;
+            margin: 0;
+        }
+
+        .timeline time p:nth-child(1){
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        .timeline time p:nth-child(2){
+            font-size: 10px;
+            margin-top: 5px;
+        }
+
+        .timeline .timepoint{
+            position: absolute;
+            background: #2483ba;
+            height: 20px;
+            width: 20px;
+            top: 20px;
+            left: 20%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border-radius: 10px;
+        }
+
+        .timeline .timeline-content{
+            margin: 0 0 15px 21%;
+            background: #3594cb;
+            color: #fff;
+            padding: 10px;
+            font-size: 1.2em;
+            font-weight: 300;
+            line-height: 1.4;
+            position: relative;
+            border-radius: 5px;
+
+            min-height: 100px;
+            max-width: 70%;
+            word-wrap: break-word;
+            display: inline-block;
+        }
+    </style>
+</body>
+</html>
