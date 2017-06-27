@@ -18,7 +18,8 @@
                 c3_num = 24,        //小方块数量
                 c3_w = 7,           //小方块边长
                 c4_delay = 1200000,  //最外环虚线环绕周期
-                c4_num = 256        //最外环虚线数目
+                c4_num = 256,       //最外环虚线数目
+                imageSrc = ''
             } = options;
 
             Object.assign(this,{
@@ -40,16 +41,19 @@
 
             this.running = true;
             console.log( document.body)
-            
+
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
             parentDom.appendChild(this.canvas);
             this.canvas.style = "position:fixed;left:0;top:0";
 
+            this.image = new Image();
+            this.image.src= imageSrc;
 
             this.loadSize();
             this.loadSizeHandle = this.loadSize.bind(this);
             window.addEventListener('resize',this.loadSizeHandle);
+
 
             this.startTime = new Date();
             requestAnimationFrame(this.draw.bind(this));
@@ -72,6 +76,8 @@
             this.c3_r = max * 2 / 5;
             this.c4_r1 = max * 2 / 5;
             this.c4_r2 = max;
+
+            this.logow = min * 3 / 8;
         }
 
         draw(){
@@ -100,6 +106,7 @@
                 c4_num,
                 c4_r1,
                 c4_r2,
+                logow
             } = this;
 
             //绘制背景
@@ -179,6 +186,7 @@
             ctx.strokeStyle = lineGradient;
             ctx.lineWidth = 0.5;
             ctx.stroke();
+
             //圆环
             ctx.beginPath();
             ctx.arc(width/2, height/2, height * 3 / 8, 0, 2*Math.PI)
@@ -188,19 +196,28 @@
             ctx.lineWidth = 3;
             ctx.stroke();
 
+            ctx.drawImage(this.image,width/2 - logow/2,height/2 - logow/2 ,logow,logow)
 
             requestAnimationFrame(this.draw.bind(this));
         }
 
         destroy(){
-            this.running = false;
-            this.canvas.parentElement.removeChild(this.canvas);
-            window.removeEventListener('resize',this.loadSizeHandle)
+            this.canvas.style.transition = "opacity 1.5s";
+            this.canvas.style.opacity = "0";
+            let handel = function(){
+                this.running = false;
+                this.canvas.parentElement.removeChild(this.canvas);
+                this.canvas.removeEventListener('transitionend',handel);
+                window.removeEventListener('resize',this.loadSizeHandle);
+            }
+            this.canvas.addEventListener('transitionend',handel);
         }
 
     }
     window.onload =function(){
-        new LOLLoading();
+        window.x = new LOLLoading({
+            imageSrc:"http://o7yupdhjc.bkt.clouddn.com/17-6-27/logo-l.jpg"
+        });
     }
 
 </script>
