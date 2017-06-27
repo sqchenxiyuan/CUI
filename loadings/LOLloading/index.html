@@ -1,134 +1,206 @@
-<canvas id="canvas" width="1280" height="720"></canvas>
+<!--<canvas id="canvas" width="1280" height="720" style="position:fixed;left:0;top:0"></canvas>-->
 <script type="text/javascript">
-    const canvas = document.getElementById('canvas');
-    const width = 1280;
-    const height = 720;
-    const ctx = canvas.getContext('2d');
+    class LOLLoading{
+        constructor(options = {}){
+            this.options = options;
+
+            let {
+                parentDom = document.body, //父节点 为空默认为body
+                colorBackground = "rgb(1,10,19)",   //背景色
+                colorDash = "rgb(26,32,35)",    //内环虚线颜色
+                colorDashBig= "rgb(9,18,24)",   //外环虚线颜色
+                colorBorderLight = "rgb(100,97,79)",//圆环亮色
+                colorBorderDark = "rgb(33,32,19)",  //圆环暗色
+                c1_delay = 120000,  //内环虚线的环绕周期
+                c1_num = 256,        //内环虚线的数目
+                c2_delay = 20000,   //中心环周期
+                c3_delay = 3*60*1000,   //小方块周期
+                c3_num = 24,        //小方块数量
+                c3_w = 7,           //小方块边长
+                c4_delay = 1200000,  //最外环虚线环绕周期
+                c4_num = 256        //最外环虚线数目
+            } = options;
+
+            Object.assign(this,{
+                colorBackground,
+                colorDash,
+                colorDashBig,
+                colorBorderLight,
+                colorBorderDark,
+                c1_delay,
+                c1_num,
+                c2_delay,
+                c3_delay,
+                c3_num,
+                c3_w,
+                c4_delay,
+                c4_num
+            })
 
 
-    const colorBackground = "rgb(1,10,19)";
-    const colorBorderLight = "rgb(100,97,79)";
-    const colorBorderDark = "rgb(33,32,19)";
-    const colorDash= "rgb(26,32,35)";
-    const colorDashBig= "rgb(9,18,24)";
+            this.running = true;
+            console.log( document.body)
+            
+            this.canvas = document.createElement('canvas');
+            this.ctx = this.canvas.getContext('2d');
+            parentDom.appendChild(this.canvas);
+            this.canvas.style = "position:fixed;left:0;top:0";
 
-    const startTime = new Date();
 
-    const c1_delay = 20000;
+            this.loadSize();
+            this.loadSizeHandle = this.loadSize.bind(this);
+            window.addEventListener('resize',this.loadSizeHandle);
 
-    const c2_delay = 120000;
-    const c2_num = 256;
-    const c2_r1 = height * 3 / 8 - 30;
-    const c2_r2 = height * 3 / 8 - 10;
-
-    const c3_delay = 600000;
-    const c3_num = 256;
-    const c3_r1 = width * 2 / 5;
-    const c3_r2 = width;
-
-    const c4_delay = 1200000;
-    const c4_num = 24;
-    const c4_rc = width * 2 / 5;
-    const c4_w = 7;
-
-    function draw(){
-        const timeFlow = new Date().getTime() - startTime.getTime();
-
-        //绘制背景
-        ctx.fillStyle = colorBackground;
-        ctx.fillRect(0,0,width,height);
-
-        //绘制虚线组成的内圆
-        let c2_p = (timeFlow % c2_delay) / c2_delay;
-        ctx.beginPath();
-        for(let i = 0; i<c2_num; i++){
-            let o = 2*Math.PI * (i / c2_num + c2_p);
-            ctx.moveTo(width/2 + c2_r1 * Math.cos(o), height/2 + c2_r1 * Math.sin(o))
-            ctx.lineTo(width/2 + c2_r2 * Math.cos(o), height/2 + c2_r2 * Math.sin(o))
+            this.startTime = new Date();
+            requestAnimationFrame(this.draw.bind(this));
         }
-        ctx.closePath();
-        ctx.strokeStyle = colorDash;
-        ctx.lineWidth = 2;
-        ctx.stroke();
 
-        //绘制虚线组成的大外圆
-        let c3_p = (timeFlow % c3_delay) / c3_delay;
-        ctx.beginPath();
-        for(let i = 0; i<c3_num; i++){
-            let o = 2*Math.PI * (i / c3_num - c3_p);
-            ctx.moveTo(width/2 + c3_r1 * Math.cos(o), height/2 + c3_r1 * Math.sin(o))
-            ctx.lineTo(width/2 + c3_r2 * Math.cos(o), height/2 + c3_r2 * Math.sin(o))
+        loadSize(){
+            let ww = window.innerWidth;
+            let wh = window.innerHeight;
+            let max = Math.max(ww,wh);
+            let min = Math.min(ww,wh);
+
+            this.width = ww;
+            this.height = wh;
+            this.canvas.width = ww;
+            this.canvas.height = wh;
+
+            this.c1_r1 = min * 3 / 8 - min * 3 / 64;
+            this.c1_r2 = min * 3 / 8 - min / 64;
+            this.c2_r = min * 3 / 8;
+            this.c3_r = max * 2 / 5;
+            this.c4_r1 = max * 2 / 5;
+            this.c4_r2 = max;
         }
-        ctx.closePath();
 
-        let bgLineGradient = ctx.createRadialGradient(width/2,height/2,c3_r1,width/2,height/2,width / 2 + 50);
-        bgLineGradient.addColorStop(0.3,colorDashBig);
-        bgLineGradient.addColorStop(1,"rgba(9,18,24,0)");
+        draw(){
+            if(!this.running) return;
+            const timeFlow = new Date().getTime() - this.startTime.getTime();
+            let {
+                ctx,
+                width,
+                height,
+                colorBackground,
+                colorDash,
+                colorDashBig,
+                colorBorderLight,
+                colorBorderDark,
+                c1_delay,
+                c1_num,
+                c1_r1,
+                c1_r2,
+                c2_delay,
+                c2_r,
+                c3_delay,
+                c3_num,
+                c3_w,
+                c3_r,
+                c4_delay,
+                c4_num,
+                c4_r1,
+                c4_r2,
+            } = this;
 
-        ctx.strokeStyle = bgLineGradient;
-        ctx.lineWidth = 2;
-        ctx.stroke();
+            //绘制背景
+            ctx.fillStyle = colorBackground;
+            ctx.fillRect(0,0,width,height);
+
+            //绘制虚线组成的内圆
+            let c1_p = (timeFlow % c1_delay) / c1_delay;
+            ctx.beginPath();
+            for(let i = 0; i<c1_num; i++){
+                let o = 2*Math.PI * (i / c1_num + c1_p);
+                ctx.moveTo(width/2 + c1_r1 * Math.cos(o), height/2 + c1_r1 * Math.sin(o))
+                ctx.lineTo(width/2 + c1_r2 * Math.cos(o), height/2 + c1_r2 * Math.sin(o))
+            }
+            ctx.closePath();
+            ctx.strokeStyle = colorDash;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            //绘制虚线组成的大外圆
+            let c4_p = (timeFlow % c4_delay) / c4_delay;
+            ctx.beginPath();
+            for(let i = 0; i<c4_num; i++){
+                let o = 2*Math.PI * (i / c4_num + c4_p);
+                ctx.moveTo(width/2 + c4_r1 * Math.cos(o), height/2 + c4_r1 * Math.sin(o))
+                ctx.lineTo(width/2 + c4_r2 * Math.cos(o), height/2 + c4_r2 * Math.sin(o))
+            }
+            ctx.closePath();
+
+            let bgLineGradient = ctx.createRadialGradient(width/2,height/2,c4_r1,width/2,height/2,width / 2 + 50);
+            bgLineGradient.addColorStop(0.3,colorDashBig);
+            bgLineGradient.addColorStop(1,colorDashBig.replace('rgb','rgba').replace(')',',0)'));
+
+            ctx.strokeStyle = bgLineGradient;
+            ctx.lineWidth = 2;
+            ctx.stroke();
 
 
+            let c2_p = (timeFlow % c2_delay) / c2_delay;
+            let c2_x = width/2 + c2_r * Math.cos(2*Math.PI*c2_p);
+            let c2_y = height/2 + c2_r * Math.sin(2*Math.PI*c2_p);
+            let lineGradient = ctx.createLinearGradient(c2_x,c2_y,width - c2_x,height - c2_y);
+            lineGradient.addColorStop(0,colorBorderLight);
+            lineGradient.addColorStop(.025,colorBorderDark);
+            lineGradient.addColorStop(.975,colorBorderDark);
+            lineGradient.addColorStop(1,colorBorderLight);
 
-        
-        let c1_p = (timeFlow % c1_delay) / c1_delay;
-        let c1_x = width/2 + height * 3 / 8 * Math.cos(2*Math.PI*c1_p);
-        let c1_y = height/2 + height * 3 / 8 * Math.sin(2*Math.PI*c1_p);
+            //小方块
+            let c3_p = (timeFlow % c3_delay) / c3_delay;
+            ctx.beginPath();
+            for(let i = 0; i<c3_num; i++){
+                let o = 2*Math.PI * (i / c3_num - c3_p);
+                let x1 = width/2 + (c3_r - c3_w*Math.sqrt(2)) * Math.cos(o);
+                let y1 = height/2 + (c3_r - c3_w*Math.sqrt(2)) * Math.sin(o);
+                let x2 = width/2 + c3_r * Math.cos(o);
+                let y2 = height/2 + c3_r * Math.sin(o);
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x1 + c3_w*Math.cos(o - Math.PI/4), y1 + c3_w*Math.sin(o - Math.PI/4));
+                ctx.lineTo(x2, y2);
+                ctx.lineTo(x1 + c3_w*Math.cos(o + Math.PI/4), y1 + c3_w*Math.sin(o + Math.PI/4));
+                ctx.lineTo(x1, y1);
+            }
+            ctx.closePath();
 
-        let lineGradient = ctx.createLinearGradient(c1_x,c1_y,
-            width - c1_x,height - c1_y);
-        lineGradient.addColorStop(0,colorBorderLight);
-        lineGradient.addColorStop(.025,colorBorderDark);
-        lineGradient.addColorStop(.975,colorBorderDark);
-        lineGradient.addColorStop(1,colorBorderLight);
+            ctx.strokeStyle = lineGradient;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
 
-        //小方块
-        let c4_p = (timeFlow % c4_delay) / c4_delay;
-        ctx.beginPath();
-        for(let i = 0; i<c4_num; i++){
-            let o = 2*Math.PI * (i / c4_num - c4_p);
-            let x1 = width/2 + (c4_rc - c4_w*Math.sqrt(2)) * Math.cos(o);
-            let y1 = height/2 + (c4_rc - c4_w*Math.sqrt(2)) * Math.sin(o);
-            let x2 = width/2 + c4_rc * Math.cos(o);
-            let y2 = height/2 + c4_rc * Math.sin(o);
-            ctx.moveTo(x1, y1);
-            ctx.lineTo(x1 + c4_w*Math.cos(o - Math.PI/4), y1 + c4_w*Math.sin(o - Math.PI/4));
-            ctx.lineTo(x2, y2);
-            ctx.lineTo(x1 + c4_w*Math.cos(o + Math.PI/4), y1 + c4_w*Math.sin(o + Math.PI/4));
-            ctx.lineTo(x1, y1);
+            //两边夹线
+            ctx.beginPath();
+            ctx.moveTo(0, height / 2);
+            ctx.lineTo(width / 2 - height * 3 / 8 + 0.5, height / 2  + 0.5);
+
+            ctx.moveTo(width / 2 + height * 3 / 8  + 0.5, height / 2 + 0.5);
+            ctx.lineTo(width, height / 2);
+            ctx.closePath();
+            ctx.strokeStyle = lineGradient;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+            //圆环
+            ctx.beginPath();
+            ctx.arc(width/2, height/2, height * 3 / 8, 0, 2*Math.PI)
+            ctx.closePath();
+
+            ctx.strokeStyle = lineGradient;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+
+            requestAnimationFrame(this.draw.bind(this));
         }
-        ctx.closePath();
 
-        ctx.strokeStyle = lineGradient;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        
-        //两边夹线
-        ctx.beginPath();
-        ctx.moveTo(0, height / 2);
-        ctx.lineTo(width / 2 - height * 3 / 8 + 0.5, height / 2  + 0.5);
+        destroy(){
+            this.running = false;
+            this.canvas.parentElement.removeChild(this.canvas);
+            window.removeEventListener('resize',this.loadSizeHandle)
+        }
 
-        ctx.moveTo(width / 2 + height * 3 / 8  + 0.5, height / 2 + 0.5);
-        ctx.lineTo(width, height / 2);
-        ctx.closePath();
-        ctx.strokeStyle = lineGradient;
-        ctx.lineWidth = 0.5;
-        ctx.stroke();
-
-        //绘制圆
-        // ctx.move(width/2,height/2);
-        ctx.beginPath();
-        ctx.arc(width/2, height/2, height * 3 / 8, 0, 2*Math.PI)
-        ctx.closePath();
-
-        ctx.strokeStyle = lineGradient;
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        requestAnimationFrame(draw)
+    }
+    window.onload =function(){
+        new LOLLoading();
     }
 
-
-    requestAnimationFrame(draw)
 </script>
