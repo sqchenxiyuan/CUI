@@ -1,0 +1,175 @@
+<script src="https://cdn.bootcss.com/vue/2.4.2/vue.js"></script>
+<script src="https://cdn.bootcss.com/pdf.js/1.9.491/pdf.min.js"></script>
+
+<div id="demo">
+    <button v-on:click="selectFile">选择</button>
+    <pdfrender :src="src"></pdfrender>
+</div> 
+
+<style>
+    .mark{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background: rgba(0,0,0,0.7);
+    }
+
+    .container{
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .page{
+        margin: auto;
+        position: relative;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script type="text/x-template" id="pdf-render">
+    <div class="container" ref="container">
+        <div class="page" v-for="(page,index) in pageArr" :style="{width:pageView[index].width + 'px', height:pageView[index].height + 'px'}">
+            <canvas :width="pageView[index].width" :height="pageView[index].height" ref="canvas"></canvas>
+            <div v-if="!pageRender[index]" class="mark">{{pageRender[index]}}{{!pageRender[index]}}</div>
+        </div>
+    </div>
+</script>
+<script>
+    PDFJS.workerSrc = "https://cdn.bootcss.com/pdf.js/1.9.491/pdf.worker.min.js"
+
+
+    Vue.component('pdfrender', {
+        template: '#pdf-render',
+        props:{
+            src:{
+                type:String,
+                required:true
+            }
+        },
+        data() {
+            return {
+                loadingTask: null,
+                pdf: null,
+                pagenum: 0,
+                pageArr: [],
+                pageRender: []
+            }
+        },
+        computed: {
+            pageView() {
+                return this.pageArr.map(page => {
+                    var viewport = page.getViewport(1);
+                    return viewport
+                })
+            }
+        },
+        watch: {
+            src() {
+                if(this.src){
+                    this.init()
+                }
+            }
+        },
+        methods: {
+            init() {
+                this.loadingTask = null
+                this.pdf = null
+                this.pagenum = 0
+                this.pageArr = []
+                this.pageRender = []
+
+                this.render()
+            },
+            render() {
+                let loadingTask =  PDFJS.getDocument(this.src).promise
+                this.loadingTask = loadingTask
+                loadingTask.then(this.loaded)
+            },
+            loaded(pdf) {
+                console.info(`pdf loaded !`)
+                this.pdf = pdf
+                this.pagenum = pdf.numPages
+
+                let parr = []
+                for(let i = 1; i <= pdf.numPages; i++){
+                    parr.push(pdf.getPage(i))
+                    // this.$set(this.pageRender, i-1, false)
+                    this.pageRender.push(false)
+                }
+                Promise.all(parr).then(this.pagesInit)
+            },
+            pagesInit(pageArr){
+                this.pageArr = pageArr
+                this.$nextTick(this.renderPages)
+            },
+            renderPages(){
+                let container = this.$refs.container
+                let canvases = this.$refs.canvas
+
+                let crect = container.getBoundingClientRect()
+                console.log(crect)
+                canvases.forEach((canvas, index) => {
+                    let rect = canvas.getBoundingClientRect()
+                    if(rect.top < crect.bottom && rect.bottom > crect.top){
+                        this.renderPageByIndex(index)
+                    }
+                })
+            },
+            renderPageByIndex(index){
+                if(this.pageRender[index]){
+                    return
+                }
+                this.$set(this.pageRender, index, true)
+
+                let page = this.pageArr[index]
+                let bcanvas = document.createElement('canvas')
+                let viewport = this.pageView[index]
+                let context = bcanvas.getContext('2d')
+                bcanvas.height = viewport.height
+                bcanvas.width = viewport.width
+
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                }
+
+                var renderTask = page.render(renderContext);
+                renderTask.then(_ => {
+                    let canvas = this.$refs.canvas[index]
+                    canvas.getContext('2d').drawImage(bcanvas, 0, 0, viewport.width, viewport.height)
+                });
+            }
+        }
+    })
+
+
+    let x = new Vue({
+        el:"#demo",
+        data:{
+            inputE:null,
+            src:""
+        },
+        methods:{
+            selectFile(){
+                let input = document.createElement("input")
+                input.type = "file"
+                input.click()
+                input.onchange = this.getFile
+                this.inputE = input
+            },
+            getFile() {
+                let file = this.inputE.files[0]
+                var reader = new FileReader()
+                let data = reader.readAsDataURL(file)
+
+                reader.onload = _ => {
+                    this.src = reader.result
+                    // this.src = "http://127.0.0.1/outputs/test.pdf"
+                }
+            }
+        }
+    })
+    console.log(x)
+</script>
