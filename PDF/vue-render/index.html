@@ -1,3 +1,4 @@
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <script src="https://cdn.bootcss.com/vue/2.4.2/vue.js"></script>
 <script src="https://cdn.bootcss.com/pdf.js/1.9.491/pdf.min.js"></script>
 
@@ -15,29 +16,120 @@
         left: 0;
         background: rgba(0,0,0,0.7);
     }
+    .loading{
+        position: absolute;
+        top: 0
+    }
 
     .container{
         max-height: 500px;
         overflow-y: auto;
+        background:rgb(82, 86, 89);
+        padding: 20px;
     }
 
     .page{
         margin: auto;
         position: relative;
         margin-bottom: 10px;
+        box-shadow: 0px 0px 14px 0px black;
     }
 </style>
 
+
+<script type="text/x-template" id="pdf-render-page">
+    <div class="page" :style="{width:viewport.width + 'px', height:viewport.height + 'px'}">
+        <canvas :width="viewport.width" :height="viewport.height" ref="canvas"></canvas>
+        <div v-if="state === 0" class="mark">wait loading</div>
+        <div v-if="state === 1" class="loading">loading</div>
+        <!-- <div v-if="pageRender[index] === 2" class="ok">ok</div> -->
+        <div v-if="state === 3" class="error">ok</div>
+    </div>
+</script>
+
 <script type="text/x-template" id="pdf-render">
-    <div class="container" ref="container">
-        <div class="page" v-for="(page,index) in pageArr" :style="{width:pageView[index].width + 'px', height:pageView[index].height + 'px'}">
-            <canvas :width="pageView[index].width" :height="pageView[index].height" ref="canvas"></canvas>
-            <div v-if="!pageRender[index]" class="mark">{{pageRender[index]}}{{!pageRender[index]}}</div>
+    <div>
+        <button v-on:click="bigger">变大</button>
+        <button v-on:click="smaller">变小</button>
+        <div class="container" ref="container" @scroll="scroll">
+            <pdfrenderpage v-for="page in pageArr" :page="page" ref="pages" :scale="scale"></pdfrenderpage>
+            <!-- <div class="page" v-for="(page,index) in pageArr" :key="index" :style="{width:pageView[index].width + 'px', height:pageView[index].height + 'px'}">
+                <pdfrenderpage></pdfrenderpage>
+                <canvas :width="pageView[index].width" :height="pageView[index].height" ref="canvas"></canvas>
+                <div v-if="page.state === 0" class="mark">wait loading</div>
+                <div v-if="page.state === 1" class="loading">loading</div>
+                <div v-if="pageRender[index] === 2" class="ok">ok</div>
+                <div v-if="page.state === 3" class="error">ok</div>
+            </div> -->
         </div>
     </div>
 </script>
 <script>
     PDFJS.workerSrc = "https://cdn.bootcss.com/pdf.js/1.9.491/pdf.worker.min.js"
+
+    const VIEW_STATE_WAITE = 0;
+    const VIEW_STATE_ING = 1;
+    const VIEW_STATE_OK = 2;
+    const VIEW_STATE_ERROR = 3;
+
+    Vue.component('pdfrenderpage', {
+        template: '#pdf-render-page',
+        props:{
+            page:{
+                required:true
+            },
+            scale:{
+                default:1
+            }
+        },
+        data() {
+            return {
+                state: VIEW_STATE_WAITE
+            }
+        },
+        computed:{
+            viewport() {
+                return this.page.getViewport(this.scale)
+            }
+        },
+        watch:{
+            scale(){
+                this.init()
+            }
+        },
+        methods:{
+            init(){
+                this.state = VIEW_STATE_WAITE
+            },
+            renderPage(){
+                let page = this.page
+                if(this.state !== VIEW_STATE_WAITE){
+                    return
+                }
+                this.state = VIEW_STATE_ING;
+
+                let bcanvas = document.createElement('canvas')
+                let viewport = this.viewport
+                let context = bcanvas.getContext('2d')
+                bcanvas.height = viewport.height
+                bcanvas.width = viewport.width
+
+                var renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                }
+
+                var renderTask = page.render(renderContext);
+                renderTask.then(_ => {
+                    let canvas = this.$refs.canvas
+                    this.state = VIEW_STATE_OK;
+                    this.$nextTick(_ => {
+                        canvas.getContext('2d').drawImage(bcanvas, 0, 0, viewport.width, viewport.height)
+                    })
+                });
+            }
+        }
+    })
 
 
     Vue.component('pdfrender', {
@@ -54,13 +146,13 @@
                 pdf: null,
                 pagenum: 0,
                 pageArr: [],
-                pageRender: []
+                scale:1
             }
         },
         computed: {
             pageView() {
-                return this.pageArr.map(page => {
-                    var viewport = page.getViewport(1);
+                return this.pageArr.map(view => {
+                    var viewport = view.page.getViewport(this.scale);
                     return viewport
                 })
             }
@@ -70,15 +162,22 @@
                 if(this.src){
                     this.init()
                 }
+            },
+            pageArr(n) {
+                console.log(n)
             }
         },
         methods: {
+            scroll:scrollExtend({
+                scrollEnd:function(e){
+                    this.renderPages()
+                }
+            }),  
             init() {
                 this.loadingTask = null
                 this.pdf = null
                 this.pagenum = 0
                 this.pageArr = []
-                this.pageRender = []
 
                 this.render()
             },
@@ -95,51 +194,32 @@
                 let parr = []
                 for(let i = 1; i <= pdf.numPages; i++){
                     parr.push(pdf.getPage(i))
-                    // this.$set(this.pageRender, i-1, false)
-                    this.pageRender.push(false)
                 }
                 Promise.all(parr).then(this.pagesInit)
             },
-            pagesInit(pageArr){
-                this.pageArr = pageArr
+            pagesInit(pages){
+                this.pageArr = pages
                 this.$nextTick(this.renderPages)
             },
             renderPages(){
                 let container = this.$refs.container
-                let canvases = this.$refs.canvas
+                let pages = this.$refs.pages
 
                 let crect = container.getBoundingClientRect()
-                console.log(crect)
-                canvases.forEach((canvas, index) => {
-                    let rect = canvas.getBoundingClientRect()
+                pages.forEach((page, index) => {
+                    let rect = page.$el.getBoundingClientRect()
                     if(rect.top < crect.bottom && rect.bottom > crect.top){
-                        this.renderPageByIndex(index)
+                        page.renderPage()
                     }
                 })
             },
-            renderPageByIndex(index){
-                if(this.pageRender[index]){
-                    return
-                }
-                this.$set(this.pageRender, index, true)
-
-                let page = this.pageArr[index]
-                let bcanvas = document.createElement('canvas')
-                let viewport = this.pageView[index]
-                let context = bcanvas.getContext('2d')
-                bcanvas.height = viewport.height
-                bcanvas.width = viewport.width
-
-                var renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                }
-
-                var renderTask = page.render(renderContext);
-                renderTask.then(_ => {
-                    let canvas = this.$refs.canvas[index]
-                    canvas.getContext('2d').drawImage(bcanvas, 0, 0, viewport.width, viewport.height)
-                });
+            bigger() {
+                this.scale = this.scale + 0.1
+                this.$nextTick(this.renderPages)
+            },
+            smaller() {
+                this.scale = this.scale - 0.1
+                this.$nextTick(this.renderPages)
             }
         }
     })
@@ -171,5 +251,27 @@
             }
         }
     })
-    console.log(x)
+
+    function scrollExtend(options){
+        let handler=null;
+        let {
+            scrollStart,
+            scrollIng,
+            scrollEnd,
+            delay = 200
+        } = options
+
+        return function(){
+            let _arguments = arguments
+            if(!handler&&scrollStart) scrollStart.apply(this, _arguments)
+            if(handler) clearTimeout(handler)
+            if(scrollIng) scrollIng.apply(this, _arguments)
+            if(scrollEnd){
+                handler = setTimeout(()=>{
+                    handler = null
+                    scrollEnd.apply(this, _arguments)
+                },delay)
+            }
+        };
+    }
 </script>
