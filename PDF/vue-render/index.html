@@ -53,14 +53,6 @@
         <button v-on:click="smaller">变小</button>
         <div class="container" ref="container" @scroll="scroll">
             <pdfrenderpage v-for="page in pageArr" :page="page" ref="pages" :scale="scale"></pdfrenderpage>
-            <!-- <div class="page" v-for="(page,index) in pageArr" :key="index" :style="{width:pageView[index].width + 'px', height:pageView[index].height + 'px'}">
-                <pdfrenderpage></pdfrenderpage>
-                <canvas :width="pageView[index].width" :height="pageView[index].height" ref="canvas"></canvas>
-                <div v-if="page.state === 0" class="mark">wait loading</div>
-                <div v-if="page.state === 1" class="loading">loading</div>
-                <div v-if="pageRender[index] === 2" class="ok">ok</div>
-                <div v-if="page.state === 3" class="error">ok</div>
-            </div> -->
         </div>
     </div>
 </script>

@@ -9,10 +9,12 @@
 >Web动画编辑器
 
 开发完成的:
-> 滚轮自定义事件插件	V0.1
+>   LOL loading动画
 >
-> AJAX插件		V0.1
+>   滚轮自定义事件插件	V0.1
 >
->星型连接 v0.1
+>   AJAX插件		V0.1
+>
+>   星型连接 v0.1
 
 [博客地址](http://www.cxyblogbiu.com/)
