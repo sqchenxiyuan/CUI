@@ -38,8 +38,8 @@
 
 
 <script type="text/x-template" id="pdf-render-page">
-    <div class="page" :style="{width:viewport.width + 'px', height:viewport.height + 'px'}">
-        <canvas :width="viewport.width" :height="viewport.height" ref="canvas"></canvas>
+    <div class="page" :style="{width:width + 'px', height:height + 'px'}">
+        <canvas :width="width" :height="height" ref="canvas"></canvas>
         <div v-if="state === 0" class="mark">wait loading</div>
         <div v-if="state === 1" class="loading">loading</div>
         <!-- <div v-if="pageRender[index] === 2" class="ok">ok</div> -->
@@ -59,6 +59,7 @@
 <script>
     PDFJS.workerSrc = "https://cdn.bootcss.com/pdf.js/1.9.491/pdf.worker.min.js"
 
+    const CSS_UNITS = 96.0 / 72.0;    
     const VIEW_STATE_WAITE = 0;
     const VIEW_STATE_ING = 1;
     const VIEW_STATE_OK = 2;
@@ -81,8 +82,16 @@
         },
         computed:{
             viewport() {
-                return this.page.getViewport(this.scale)
-            }
+                return this.page.getViewport( this.scale)
+            },
+            width() {
+                // return this.viewport.width
+                return Math.floor(this.viewport.width)
+            },
+            height() {
+                // return this.viewport.height                
+                return Math.floor(this.viewport.height)
+            },
         },
         watch:{
             scale(){
@@ -103,20 +112,20 @@
                 let bcanvas = document.createElement('canvas')
                 let viewport = this.viewport
                 let context = bcanvas.getContext('2d')
-                bcanvas.height = viewport.height
-                bcanvas.width = viewport.width
+                bcanvas.height = this.height
+                bcanvas.width = this.width
 
                 var renderContext = {
                     canvasContext: context,
                     viewport: viewport
                 }
-
+                console.log(renderContext)
                 var renderTask = page.render(renderContext);
                 renderTask.then(_ => {
                     let canvas = this.$refs.canvas
                     this.state = VIEW_STATE_OK;
                     this.$nextTick(_ => {
-                        canvas.getContext('2d').drawImage(bcanvas, 0, 0, viewport.width, viewport.height)
+                        canvas.getContext('2d').drawImage(bcanvas, 0, 0, this.width, this.height)
                     })
                 });
             }
@@ -266,4 +275,20 @@
             }
         };
     }
+
+    function getOutputScale(ctx) {
+        let devicePixelRatio = window.devicePixelRatio || 1;
+        let backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
+                                ctx.mozBackingStorePixelRatio ||
+                                ctx.msBackingStorePixelRatio ||
+                                ctx.oBackingStorePixelRatio ||
+                                ctx.backingStorePixelRatio || 1;
+        let pixelRatio = devicePixelRatio / backingStoreRatio;
+        return {
+            sx: pixelRatio,
+            sy: pixelRatio,
+            scaled: pixelRatio !== 1,
+        };
+    }
+
 </script>
