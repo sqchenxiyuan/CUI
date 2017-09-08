@@ -168,6 +168,7 @@ DHTSpider.prototype.onAnnouncePeerRequest = function(msg, rinfo) {
 DHTSpider.prototype.onMessage = function(msg, rinfo) {
    try {
        var msg = bencode.decode(msg);
+       console.log(msg)
        if (msg.y == 'r' && msg.r.nodes) {
            this.onFindNodeResponse(msg.r.nodes);
        }
