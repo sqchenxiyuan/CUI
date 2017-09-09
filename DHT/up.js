@@ -20,7 +20,7 @@ class DHTpeer{
 
         this.nodeId = randomID()//生成节点ID
         this.ktable = [] //K桶
-        this.ktablehash = new Map()
+        this.ktableHash = new Map()
         this.address = address
         this.port = port
         this.server = dgram.createSocket('udp4')
@@ -44,7 +44,7 @@ class DHTpeer{
     onMessage(msg, rinfo){
         try {
             msg = bencode.decode(msg)
-            console.log(msg)
+
             if (msg.y == 'r' && msg.r.nodes) {
                 this.FindNodeResponse(msg.r.nodes);
             }
@@ -103,8 +103,11 @@ class DHTpeer{
     FindNodeResponse(nodes){
         var nodes = DHTpeer.decodeNodes(nodes)
         nodes.forEach(node => {
-            if (node.nodeId != this.nodeId && node.port < 65536 && node.port > 0) {
+            let str_id = node.nodeId.toString('hex')
+            if (node.nodeId != this.nodeId && node.port < 65536 && node.port > 0 && !this.ktableHash.has(str_id)) {
+                this.ktableHash.set(str_id, true)
                 this.ktable.push(node)
+                console.log(`添加节点: ${node.address}:${node.port} ==> ${str_id}`)
             }
         })
     }
@@ -122,7 +125,7 @@ class DHTpeer{
         let nodes = []
         for(let i = 0; i + 26 < nodesBuff.length; i+=26){
             let node = {
-                nodeId: nodesBuff.slice(i, 20),
+                nodeId: nodesBuff.slice(i, i + 20),
                 address: `${nodesBuff[i + 20]}.${nodesBuff[i + 21]}.${nodesBuff[i + 22]}.${nodesBuff[i + 23]}`,
                 port: nodesBuff.readUInt16BE(i + 24)
             }
