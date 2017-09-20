@@ -2,15 +2,6 @@ const CONTAINER_CLASSNAME = "_diy-container"
 const CONTENTCONTAINER_CLASSNAME = "_diy-content-container"
 const ITEM_ARRAY = []
 
-class Rect{
-    constructor(x,y,w,h){
-        this.left = x
-        this.top = y
-        this.width = w
-        this.height = h
-    }
-}
-
 class DIYScroll{
 
     constructor(contentE){
@@ -34,6 +25,9 @@ class DIYScroll{
         this.maxTop = 0
         this.maxLeft = 0
         
+        this.showY = false
+        this.showX = false
+
         this.init()
         this.bind()
     }
@@ -62,7 +56,7 @@ class DIYScroll{
             let startY = e.clientY
             let YbarRect = this.Ybar.getBoundingClientRect()
             let YsliderRect = this.YSlider.getBoundingClientRect()
-
+            this.YSlider.style.transition = "none"
             let moveHanle = e => {
                 let nowY = e.clientY
                 let dy = nowY - startY
@@ -74,9 +68,10 @@ class DIYScroll{
                 this.moveToByPercentY(p)
             }
 
-            let upHandle = function(e){
+            let upHandle = e => {
                 document.removeEventListener('mousemove',moveHanle)
                 document.removeEventListener('mouseup',upHandle)
+                this.YSlider.style.transition = ""
             }
 
             document.addEventListener('mousemove',moveHanle)
@@ -88,7 +83,7 @@ class DIYScroll{
         // })
     }
     
-    //检查是否有变动
+    //检查形状是否有变动
     check(){
         let containerE = this.containerE
         let contentE = this.contentE
@@ -119,7 +114,7 @@ class DIYScroll{
                 reflowFlag = true
             }
         
-        if(reflowFlag){
+        if(reflowFlag){//存在变动需要重绘
             this.build()
         }
     }
@@ -132,10 +127,16 @@ class DIYScroll{
         //Y轴检查
         if(containerSize.height < contentSize.height){
             // console.log(`show Y`)
-            this.containerE.appendChild(this.Ybar)
+            if(!this.showY) {
+                this.containerE.appendChild(this.Ybar)
+                this.showY = true
+            }
         }else{
             // console.log(`hide Y`)
-            this.containerE.removeChild(this.Ybar)
+            if(this.showY) {
+                this.containerE.removeChild(this.Ybar)
+                this.showY = false                
+            }
         }
 
         //X轴检查
@@ -172,6 +173,7 @@ class DIYScroll{
         let vp = containerSize.height / contentSize.height * 100 //滑动条默认比例
         let p = this.scrollTop / contentSize.height * 100  //当前展示
         this.YSlider.style.height = vp + '%'
+
         this.YSlider.style.top = p + '%'
 
         this.contentE.style.top = - this.scrollTop + 'px'
