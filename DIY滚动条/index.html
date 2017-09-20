@@ -1,0 +1,73 @@
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<script src="./diyscroll.js"></script>
+<style>
+._diy-container{
+    overflow: hidden;
+}
+._diy-content-container{
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+._diy-content{
+    position:absolute;
+    top: 0;
+    left: 0;
+
+    transition: top .3s;
+}
+._diy-y-right{
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 20px;
+    background: red;
+}
+._diy-y-slider{
+    cursor: pointer;
+    position: relative;
+    background: blue;
+    top: 0;
+    transition: top .3s;
+}
+</style>
+<div class="container">
+    <div>
+        <div id="content" class="_diy-content">
+            <h1>123sfadadasdadaddad11111</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1>123</h1>
+            <h1 id="a1">123</h1>
+        </div>
+    </div>
+</div>
+<script>
+
+let content = document.getElementById("content")
+
+let diys = new DIYScroll(content)
+
+</script>
+
+<style>
+    .container{
+        height: 300px;
+        background: rebeccapurple;
+        position: relative;
+    }
+
+</style>

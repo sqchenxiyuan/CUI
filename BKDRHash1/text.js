@@ -24,7 +24,7 @@ const UTF8 = [
 ]
 
 
-console.log(BKDRHash1('关于腾讯视频_彩蛋'))
+console.log(BKDRHash1('xxx'))
 
 function BKDRHash1(str){
     let seed = 131 // 31 131 1313 13131 131313 etc..
@@ -41,7 +41,7 @@ function BKDRHash1(str){
 }
 
 
-// let x = UTF8_UNIC('关于腾讯视频_彩蛋')
+// let x = UTF8_UNIC('xxx')
 
 function UTF8_UNIC(str){
     return Array.from(str).reduce((s,c) => {
