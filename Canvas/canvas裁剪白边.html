@@ -1,0 +1,63 @@
+<img src="./test.png" alt="">
+<canvas id="canvas"></canvas>
+<script>
+    let img = document.createElement("img")
+    img.src = "./test.png"
+
+    let canvas = document.getElementById("canvas")
+
+    img.onload = function(){
+        canvas.width = img.width
+        canvas.height = img.height
+
+        let ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0)
+
+        cut(canvas)
+    }
+
+    function cut(canvas){
+        let ctx = canvas.getContext('2d')
+        let w = canvas.width
+        let h = canvas.height
+        let myImageData = ctx.getImageData(0, 0, w, h)
+
+        let minX = w
+        let maxX = 0
+        let minY = h
+        let maxY = 0
+
+        for(let i = 0; i < h; i++){
+            for(let j = 0; j < w; j++){
+                let arr = getRGBAData(myImageData, j ,i)
+                if(arr[3] !== 0){
+                    if(minX > j) minX = j
+                    if(maxX < j) maxX = j
+                    if(minY > i) minY = i
+                    if(maxY < i) maxY = i
+                }
+            }
+        }
+        
+        canvas.width = maxX - minX
+        canvas.height = maxY - minY
+
+        ctx.putImageData(myImageData, -minX, -minY, minX, minY, maxX - minX, maxY - minY)
+    }
+
+
+    function getRGBAData(imgData, x, y){
+        let w = imgData.width
+        let r = (y * w + x) * 4
+        let g = r + 1
+        let b = g + 1
+        let a = b + 1
+        return [
+            imgData.data[r],
+            imgData.data[g],
+            imgData.data[b],
+            imgData.data[a]
+        ]
+    }
+
+</script>
