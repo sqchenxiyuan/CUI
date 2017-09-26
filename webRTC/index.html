@@ -1,0 +1,21 @@
+<div class="camera">
+    <video id="video">Video stream not available.</video>
+    <button id="startbutton">Take photo</button>
+</div>
+<script>
+    let video = document.getElementById("video")
+
+    let MediaDevices = navigator.mediaDevices
+    MediaDevices.getUserMedia({
+        audio: false, video: true
+    }).then(stream => {
+        console.log(stream)
+        var videoTracks = stream.getVideoTracks();
+        stream.onremovetrack = function() {
+            console.log('Stream ended');
+        };
+        window.stream = stream; // make variable available to browser console
+        video.srcObject = stream;
+        video.play()
+    })
+</script>
