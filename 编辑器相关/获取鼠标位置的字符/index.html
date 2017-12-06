@@ -1,0 +1,111 @@
+<body>
+    <div id="ccc">
+        <p>asdgssdafasdfasdfaskjdhkjagrgqpiuyinyp<span style="color:red">asdasd</span>ryyqpwceyiuyquwiefiahsd;kfhcjhqnrpcqwepurycnweircanweurncaldskfhklahcdwue</p>
+        <h1 style="padding: 10px;">asdadsa</h1>
+        <h2>asdadsa</h2>
+        <span>asdasdasadas12313</span>
+    </div>
+    <div id="curor" style="position: absolute;border-left: 1px solid blue"></div>
+    <script>
+        let curor = document.getElementById('curor')
+
+        // document.addEventListener('click', e => {
+        //     let selection = window.getSelection()
+        //     let range = selection.getRangeAt(0)
+
+        //     range.collapse(false)
+
+        //     let span = document.createElement('span')
+        //     range.insertNode(span)
+        //     let rect = span.getBoundingClientRect()
+        //     span.parentElement.removeChild(span)
+        //     console.log(selection)
+        //     console.log(range)
+        //     console.log(rect)
+        //     // console.log(range.compareBoundaryPoints())
+        //     curor.style.left = rect.left + 'px'
+        //     curor.style.top = rect.top + 'px'
+        //     curor.style.height = rect.height + 'px'
+        // })
+        document.onselectstart = function(){return false}
+
+        //光标
+        document.getElementById('ccc').addEventListener('mousedown', e => { 
+            let range = document.createRange()
+            
+            //获取target下的childNode
+            //首先寻找最接近光标的childNode
+            
+            let nodes = e.target.childNodes
+            let target = e.target.childNodes[0]
+            let text = target.textContent
+            console.log(e.target)
+            console.log(text)
+
+            for(let i = 0;i < text.length; i++){
+                range.setStart(target, i)
+                range.setEnd(target, i + 1)
+                let rects = range.getClientRects()
+                let rect = pointInRect(e.clientX, e.clientY, rects[0])
+                
+                if(rect){
+                    if(rect.left + rect.width / 2 > e.clientX){
+                        curor.style.left = rect.left + 'px'
+                        curor.style.top = rect.top + 'px'
+                        curor.style.height = rect.height + 'px'
+                    } else {
+                        curor.style.left = rect.left + rect.width + 'px'
+                        curor.style.top = rect.top + 'px'
+                        curor.style.height = rect.height + 'px'
+                    }
+                    break
+                } else {
+                    //在最左边的情况
+                    if(i === 0){
+                        if(e.clientX < rects[0].left){
+                            rect = rects[0]
+                            curor.style.left = rect.left + 'px'
+                            curor.style.top = rect.top + 'px'
+                            curor.style.height = rect.height + 'px'
+                        }
+                    }
+
+                    //最右边的情况
+                    if(i === text.length - 1){
+                        if(e.clientX > rects[0].right){
+                            rect = rects[0]
+                            curor.style.left = rect.left + rect.width + 'px'
+                            curor.style.top = rect.top + 'px'
+                            curor.style.height = rect.height + 'px'
+                        }
+                    }
+                }
+            }
+
+            // range.setStart
+        })
+
+
+
+        function pointInRects(x, y, rects){
+            if(!Array.isArray(rects)){
+                rects = [...new Set(rects)]
+            }
+            let arr = rects.filter(rect => pointInRect(x, y, rect))
+            return arr[0]
+        }
+
+        function pointInRect(x, y, rect){
+            if(rect.left <= x 
+                && rect.right >= x
+                && rect.top <= y
+                && rect.bottom >= y){
+                    return rect
+                }
+        }
+        
+        // document.body.addEventListener('mouseup', e => {
+            //     console.log(e)
+            // })
+    </script>
+</body>
