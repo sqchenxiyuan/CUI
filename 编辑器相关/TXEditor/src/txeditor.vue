@@ -10,8 +10,12 @@
                 </el-collapse-item>
             </el-collapse>
         </div>
+        <div :style="{width: activeElement?undefined:0}" class="tx-editor-element-info">
+            <TxEditorElementInfoFrame v-if="activeElement" :element="activeElement" @close="activeElement = null"></TxEditorElementInfoFrame>
+        </div>
         <div class="editor-document-preview">
-            <TemplateDocument ref="document" :document="document"></TemplateDocument>
+            <TemplateDocument ref="document" :document="document"
+                @element-active="elementActive" @element-cancel-active="activeElement = null"></TemplateDocument>
         </div>
     </div>
 </template>
@@ -27,12 +31,14 @@ import {
 
 //组件
 import TemplateDocument from './eidtor/document.vue'
+import TxEditorElementInfoFrame from './eidtor/element-info/element-info-frame.vue'
 
 export default {
     data(){
         return {
             document: null,
-            activeNames: "blocks"
+            activeNames: "blocks",
+            activeElement: null //当前选中的元素
         }
     },
     created(){
@@ -54,10 +60,14 @@ export default {
             }
             if (!element) return 
             this.$refs.document.dragElement(e, element, e.target.getBoundingClientRect())
+        },
+        elementActive(element){
+            this.activeElement = element
         }
     },
     components: {
-        TemplateDocument
+        TemplateDocument,
+        TxEditorElementInfoFrame
     }
 }
 </script>
@@ -84,6 +94,17 @@ html, body{
         top: 0;
         width: @toolbar-width;
         bottom: 0;
+    }
+
+    .tx-editor-element-info{
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: @toolbar-width;
+        bottom: 0;
+        background: white;
+        transition: width .3s;
+        overflow: hidden;
     }
 
     .editor-document-preview{

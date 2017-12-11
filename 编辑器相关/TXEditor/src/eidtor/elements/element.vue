@@ -1,5 +1,5 @@
 <template>
-    <div class="tx-element" :style="elementStyle" @mousedown="moveElement" @click="selectElement">
+    <div class="tx-element" :style="elementStyle" @mousedown="moveElement" @click.stop="selectElement">
         <div class="tx-element-handles">
             <div class="tx-element-resize-height" @mousedown.stop="resizeElement($event, false, true)"></div>
             <div class="tx-element-resize-width" @mousedown.stop="resizeElement($event, true, false)"></div>
@@ -104,7 +104,7 @@ export default {
             document.addEventListener("selectstart", disSelect)
         },
         selectElement(){
-            console.log(123)
+            this.$emit("active")
         }
     }
 }

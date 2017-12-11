@@ -1,6 +1,8 @@
 <template>
-    <TxElement :element="element" @resize="resizeElement" @move="moveElement">
-        <div v-if="!element.imageData" class="tx-image-element-upload-hanler" @click="selectFile"></div>
+    <TxElement :element="element" @resize="resizeElement" @move="moveElement" @active="$emit('active')">
+        <div v-if="!element.imageData" class="tx-image-element-default">
+            <div class="tx-image-element-image-reupload" @click="selectFile"></div>
+        </div>
         <div v-else class="tx-image-element-image-container">
             <img :src="element.imageData" class="tx-image-element-image"/>
             <div class="tx-image-element-image-reupload" @click="selectFile"></div>
@@ -34,8 +36,9 @@ export default {
         }
     },
     methods: {
-        selectFile(){
+        selectFile(e){
             this.input.click()
+            e.stopPropagation()
         },
         uploadFile(file){
             let fileReader = new FileReader()
@@ -58,21 +61,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.tx-image-element-upload-hanler{
+.tx-image-element-default{
     cursor: pointer;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-
-    &::after{
-        content: "上传文件";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
+    background: rgba(0, 0, 255, 0.5)
 }
 
 .tx-image-element-image-container{
@@ -83,25 +79,6 @@ export default {
     bottom: 0;
     overflow: hidden;
 
-    .tx-image-element-image-reupload{
-        display: none;
-        cursor: pointer;
-        z-index: 1;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-        border: 1px solid red;
-        border-radius: 50%;
-
-        &:hover{
-            background: rgba(255, 0, 0, 0.5);
-        }
-    }
-
     .tx-image-element-image{
         position: absolute;
         top: 50%;
@@ -111,6 +88,10 @@ export default {
         // height: 100%;
     }
 
+    
+}
+
+.tx-image-element-default,.tx-image-element-image-container{
     &:hover{
         .tx-image-element-image-reupload{
             display: block;
@@ -118,8 +99,23 @@ export default {
     }
 }
 
+.tx-image-element-image-reupload{
+    display: none;
+    cursor: pointer;
+    z-index: 1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border: 1px solid red;
+    border-radius: 50%;
 
-
-
+    &:hover{
+        background: rgba(255, 0, 0, 0.5);
+    }
+}
 </style>
 

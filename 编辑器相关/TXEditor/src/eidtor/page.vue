@@ -3,7 +3,8 @@
         <template v-for="(block,index) in page.blocks">
             <hr v-if="insertBlockState && insertBlockIndex === index" :key="index" />
             <TemplateBlock ref="blocks" :key="index" :block="block"
-                @drag="dragBlock(index, arguments[0])" @delete="deleteBlock(index)" @element-move="elementMove"></TemplateBlock>
+                @drag="dragBlock(index, arguments[0])" @delete="deleteBlock(index)" 
+                @element-move="elementMove" @element-active="elementActive"></TemplateBlock>
         </template>
         <hr v-if="insertBlockState && insertBlockIndex === page.blocks.length" :key="page.blocks.length" />            
     </div>
@@ -101,6 +102,9 @@ export default {
         },
         elementMove(e, element, rect){
             this.$emit("element-move", e, element, rect)
+        },
+        elementActive(element){
+            this.$emit("element-active", element)
         }
     },
     components: {

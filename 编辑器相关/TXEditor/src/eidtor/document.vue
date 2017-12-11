@@ -1,12 +1,12 @@
 <template>
-    <div class="document-preview-container">
+    <div class="document-preview-container" @click="cancelActiveElement">
         <div ref="wheel-event-handler"></div>
         <template v-for="(page, index) in pages" >
             <div class="append-new-page" v-if="index === 0"  :key="index" @click="appendNewPage(index)">
                 <hr>
             </div>
             <TemplatePage ref="pages" :key="index" :page="page"
-                @dragBlock="dragBlock" @element-move="dragElement"></TemplatePage>
+                @dragBlock="dragBlock" @element-move="dragElement" @element-active="elementActive"></TemplatePage>
             <div class="append-new-page" :key="index + 1" @click="appendNewPage(index + 1)">
                 <hr>
             </div>
@@ -153,6 +153,12 @@ export default {
             document.addEventListener("mousemove", mousemove)
             document.addEventListener("selectstart", disSelect)
         },
+        elementActive(element){
+            this.$emit("element-active", element)
+        },
+        cancelActiveElement(){
+            this.$emit("element-cancel-active")
+        }
     },
     components: {
         TemplatePage

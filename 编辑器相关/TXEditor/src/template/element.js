@@ -13,6 +13,7 @@ import uuidv4 from 'uuid/v4'
 class Element{
     constructor(){
         this.id = uuidv4()
+        this.parent = null
         this.eType = null //元素的类型
         this.size = {
             width: 80,
@@ -22,6 +23,15 @@ class Element{
             top: 0,
             left: 0
         }
+    }
+
+    setParent(parent){
+        this.parent = parent
+    }
+
+    remove(){
+        if (this.parent) this.parent.removeElement(this)
+        else throw new Error("该元素没有父节点")
     }
 }
 

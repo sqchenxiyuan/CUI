@@ -3,12 +3,12 @@
         <div class="tx-block-inner" ref="blockinner" :style="blockInnerStyle">
             <div :style="{opacity:state > 0 ? 1:0}" class="tx-block-drag-handler" @mousedown="dragBlock"></div>
             <div :style="{opacity:state > 0 ? 1:0}" class="tx-block-delete-handler" @click="deleteBlock"></div>
-            <span v-if="block.elements.length === 0 && !insertElementObj" style="color:#888">拖入元素{{block.id}}</span>
+            <span v-if="block.getElementsCount() === 0 && !insertElementObj" style="color:#888">拖入元素{{block.id}}</span>
             <template v-if="insertElementObj">
                 <TxElementRender :element="insertElementObj"></TxElementRender>
             </template>
-            <TxElementRender v-for="(element,index) in block.elements" :key="element.id" :element="element"
-                @resize="elementResize(element, arguments[0])" @move="elementMove(index, arguments[0], arguments[1])"></TxElementRender>
+            <TxElementRender v-for="element in block.getElements()" :key="element.id" :element="element"
+                @resize="elementResize(element, arguments[0])" @move="elementMove(element, arguments[0], arguments[1])" @active="elementActive(element)"></TxElementRender>
         </div>
     </div>
 </template>
@@ -109,7 +109,7 @@ export default {
                 element.position = {top, left}
                 element.size = {width, height}
 
-                this.block.elements.push(this.insertElementObj)
+                this.block.appendElement(this.insertElementObj)
                 this.insertElementObj = null
             }
             this.computeHeight()
@@ -124,14 +124,12 @@ export default {
             element.size.height = size.height
             this.computeHeight()
         },
-        elementMove(index, e, rect){
-            console.log(e)
-            let element = this.block.elements[index]
-            this.block.elements.splice(index, 1)
+        elementMove(element, e, rect){
+            element.remove()
             this.$emit("element-move", e, element, rect)
         },
         computeHeight(){
-            let elements = this.block.elements
+            let elements = this.block.getElements()
             let minHeight = 30
             elements.forEach(e => {
                 let h = e.size.height + e.position.top
@@ -140,6 +138,9 @@ export default {
                 }
             })
             this.block.height = minHeight + this.block.padding * 2
+        },
+        elementActive(element){ //激活元素
+            this.$emit("element-active", element)
         }
     },
     components: {
