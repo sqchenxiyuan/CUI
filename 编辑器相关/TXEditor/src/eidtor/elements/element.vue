@@ -1,13 +1,14 @@
 <template>
     <div class="tx-element" :style="elementStyle" @mousedown="moveElement" @click="selectElement">
-        <div class="tx-element-resize-height" @mousedown.stop="resizeElement($event, false, true)"></div>
-        <div class="tx-element-resize-width" @mousedown.stop="resizeElement($event, true, false)"></div>
-        <div class="tx-element-resize-freedom" @mousedown.stop="resizeElement($event, true, true)"></div>
+        <div class="tx-element-handles">
+            <div class="tx-element-resize-height" @mousedown.stop="resizeElement($event, false, true)"></div>
+            <div class="tx-element-resize-width" @mousedown.stop="resizeElement($event, true, false)"></div>
+            <div class="tx-element-resize-freedom" @mousedown.stop="resizeElement($event, true, true)"></div>
+        </div>
         <div v-if="resizing" class="tx-element-resize-preview" :style="resizeReviewStyle"></div>
         <slot></slot>
     </div>
 </template>
-
 
 <script>
 import Element from "@template/element.js"
@@ -22,7 +23,7 @@ export default {
     data(){
         return {
             //调整大小相关
-            resizing: true,
+            resizing: false,
             resizeWidth: 0,
             resizeHeight: 0
         }
@@ -112,8 +113,18 @@ export default {
 <style lang="less" scoped>
 .tx-element{
     position: absolute;
-    outline: 1px solid green;
     box-sizing: border-box;
+    
+    & .tx-element-handles{
+        display: none;
+    }
+
+    &:hover{
+        & .tx-element-handles{
+            display: block;
+        }
+        outline: 1px solid green;
+    }
 }
 
 @tx-element-resize-handler-size:9px;
