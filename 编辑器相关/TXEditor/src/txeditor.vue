@@ -5,6 +5,9 @@
                 <el-collapse-item title="块" name="blocks">
                     <div class="template-block" @mousedown="createBlock">空块</div>
                 </el-collapse-item>
+                <el-collapse-item title="元素" name="elements">
+                    <div class="template-block" @mousedown="createElement($event, 1)">图片</div>
+                </el-collapse-item>
             </el-collapse>
         </div>
         <div class="editor-document-preview">
@@ -16,6 +19,11 @@
 <script>
 import Document from './template/document.js'
 import Block from './template/block.js'
+import {
+    Element,
+    TextElement,
+    ImageElement
+} from './template/element.js'
 
 //组件
 import TemplateDocument from './eidtor/document.vue'
@@ -36,6 +44,16 @@ export default {
         },
         createBlock(e){ //开始放置块
             this.$refs.document.dragBlock(e, new Block(), e.target.getBoundingClientRect())
+        },
+        createElement(e, type){ //放置图片元素
+            let element
+            switch (type) {
+                case 1:
+                    element = new ImageElement()
+                    break
+            }
+            if (!element) return 
+            this.$refs.document.dragElement(e, element, e.target.getBoundingClientRect())
         }
     },
     components: {

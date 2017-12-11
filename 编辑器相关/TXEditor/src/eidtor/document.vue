@@ -1,12 +1,12 @@
 <template>
-    <div class="document-preview-container" @mousewheel="mousewheel">
+    <div class="document-preview-container">
         <div ref="wheel-event-handler"></div>
         <template v-for="(page, index) in pages" >
             <div class="append-new-page" v-if="index === 0"  :key="index" @click="appendNewPage(index)">
                 <hr>
             </div>
             <TemplatePage ref="pages" :key="index" :page="page"
-                @dragBlock="dragBlock"></TemplatePage>
+                @dragBlock="dragBlock" @element-move="dragElement"></TemplatePage>
             <div class="append-new-page" :key="index + 1" @click="appendNewPage(index + 1)">
                 <hr>
             </div>
@@ -30,11 +30,6 @@ export default {
         }
     },
     methods: {
-        mousewheel(e){
-            // e.stopPropagation()
-            // e.preventDefault()
-            console.log("y", e)
-        },
         appendNewPage(index){
             this.document.appendNewPage(index)
         },
@@ -95,24 +90,69 @@ export default {
             document.addEventListener("mouseup", mouseup)
             document.addEventListener("mousemove", mousemove)
             document.addEventListener("selectstart", disSelect)
-            moveBlock.addEventListener("mousewheel", e => {
-                let {
-                    deltaX,
-                    deltaY,
-                    deltaZ,
-                    deltaMode
-                } = e
+        },
+        movingElement(e, element, offsets){
+            let pages = this.$refs.pages
+            pages.forEach(p => p.movingElement(e, element, offsets))
+        },
+        insertElement(e, element, offsets){
+            let pages = this.$refs.pages
+            pages.forEach(p => p.insertElement(e, element, offsets))
+        },
+        dragElement(e, element, elementRect){
+            //构建元素
+            let moveBlock = document.createElement("div")
+            let blockLeft, blockTop
+            moveBlock.className = "moving-template-block"
+            if (elementRect){
+                blockTop = elementRect.top
+                blockLeft = elementRect.left
+            } else { //以鼠标为中心
+                blockTop = e.clientY - element.size.width / 2
+                blockLeft = e.clientX - element.size.height / 2
+            }
+            moveBlock.style.width = element.size.width + 'px'
+            moveBlock.style.height = element.size.height + 'px'
+            moveBlock.style.top = blockTop + 'px'
+            moveBlock.style.left = blockLeft + 'px'
+            
+            let offsets = {
+                top: e.clientY - blockTop,
+                left: e.clientX - blockLeft
+            }
+            document.body.appendChild(moveBlock)
+            
+            //记录初始数据
+            let startX = e.clientX
+            let startY = e.clientY
+            let startBlockPositionX = blockLeft
+            let startBlockPositionY = blockTop
 
-                let xe = new WheelEvent("wheel",{
-                    deltaX,
-                    deltaY,
-                    deltaZ,
-                    deltaMode
-                })
+            let mousemove = e => {
+                let nowBlockPositionX = e.clientX - startX + startBlockPositionX
+                let nowBlockPositionY = e.clientY - startY + startBlockPositionY
 
-                // this.$refs["wheel-event-handler"].dispatchEvent(xe)
-            })
-        }
+                moveBlock.style.left = nowBlockPositionX + 'px'
+                moveBlock.style.top = nowBlockPositionY + 'px'
+                this.movingElement(e, element, offsets)
+            }
+
+            let mouseup = e => {
+                moveBlock.parentElement.removeChild(moveBlock)
+                document.removeEventListener("selectstart", disSelect)
+                document.removeEventListener("mousemove", mousemove)
+                document.removeEventListener("mouseup", mouseup)
+                this.insertElement(e, element, offsets)
+            }
+
+            let disSelect = function(e){
+                e.returnValue = false
+            }
+            
+            document.addEventListener("mouseup", mouseup)
+            document.addEventListener("mousemove", mousemove)
+            document.addEventListener("selectstart", disSelect)
+        },
     },
     components: {
         TemplatePage

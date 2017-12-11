@@ -2,8 +2,8 @@
     <div ref="page" class="template-page" :style="pageStyle">
         <template v-for="(block,index) in page.blocks">
             <hr v-if="insertBlockState && insertBlockIndex === index" :key="index" />
-            <TemplateBlock  ref="blocks" :key="index" :block="block"
-                @drag="dragBlock(index, arguments[0])" @delete="deleteBlock(index)"></TemplateBlock>
+            <TemplateBlock ref="blocks" :key="index" :block="block"
+                @drag="dragBlock(index, arguments[0])" @delete="deleteBlock(index)" @element-move="elementMove"></TemplateBlock>
         </template>
         <hr v-if="insertBlockState && insertBlockIndex === page.blocks.length" :key="page.blocks.length" />            
     </div>
@@ -86,6 +86,21 @@ export default {
         },
         deleteBlock(index){
             this.page.blocks.splice(index, 1)
+        },
+        movingElement(e, element, offsets){
+            let blocks = this.$refs.blocks
+            if (blocks){
+                blocks.forEach(b => b.movingElement(e, element, offsets))
+            }
+        },
+        insertElement(e, element, offsets){
+            let blocks = this.$refs.blocks
+            if (blocks){
+                blocks.forEach(b => b.insertElement(e, element, offsets))
+            }
+        },
+        elementMove(e, element, rect){
+            this.$emit("element-move", e, element, rect)
         }
     },
     components: {

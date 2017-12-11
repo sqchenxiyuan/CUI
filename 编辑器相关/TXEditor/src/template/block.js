@@ -7,6 +7,7 @@ class Block{
         this.id = uuidv4()
         this.height = 30
         this.margin = 10
+        this.padding = 3
 
         this.elements = []
     }
