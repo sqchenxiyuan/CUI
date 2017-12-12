@@ -1,7 +1,29 @@
 <template>
     <div class="tx-eidtor-element-info-frame">
         <div class="tx-eidtor-element-info-frame-title">{{elementTypeName}}</div>
-        <div class="tx-editor-element-info-frame-body"></div>
+        <div class="tx-editor-element-info-frame-body">
+            <el-collapse v-model="activeNames">
+                <el-collapse-item title="元素尺寸" name="size">
+                    宽度：
+                    <el-input-number v-model="element.size.width" placeholder="宽" :controls="false">
+                    </el-input-number>
+                    <br>
+                    高度：
+                    <el-input-number v-model="element.size.height" placeholder="高" :controls="false">
+                    </el-input-number>
+                </el-collapse-item>
+                <el-collapse-item title="元素位置" name="position">
+                    X：
+                    <el-input-number v-model="element.position.left" placeholder="X" :controls="false">
+                    </el-input-number>
+                    <br>
+                    Y：
+                    <el-input-number v-model="element.position.top" placeholder="Y" :controls="false">
+                    </el-input-number>
+                </el-collapse-item>
+            </el-collapse>
+            <component :is="infoElement" :element="element"></component>
+        </div>
         <div class="tx-editor-element-info-frame-footer">
             <el-button type="danger" @click="deleteElement">删除</el-button>
             <el-button type="success" @click="close">完成</el-button>
@@ -12,6 +34,8 @@
 <script>
 import Element from "@template/element.js"
 
+import TxImageElementInfo from "./image-element-info.vue"
+
 export default {
     props: {
         element: {
@@ -19,14 +43,24 @@ export default {
             required: true
         }
     },
+    data(){
+        return {
+            activeNames: ""
+        }
+    },
     computed: {
         elementTypeName(){
             switch (this.element.eType){
                 case 1: return "图片元素"
             }
+        },
+        infoElement(){
+            switch (this.element.eType){
+                case 1: return TxImageElementInfo
+            }
         }
     },
-    methods:{
+    methods: {
         deleteElement(){
             this.element.remove()
             this.close()
@@ -62,7 +96,8 @@ export default {
     width: 100%;
     bottom: 110px;
     top: 30px;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .tx-editor-element-info-frame-footer{

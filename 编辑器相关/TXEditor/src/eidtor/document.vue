@@ -15,23 +15,24 @@
 </template>
 
 <script>
-import Document from '../template/document.js'
+import TxDocument from '@template/document.js'
+import TxPage from '@template/page.js'
 
 //组件
 import TemplatePage from './page.vue'
 
 export default {
     props: {
-        document: Document
+        document: TxDocument
     },
     computed: {
         pages(){
-            return this.document.pages
+            return this.document.getPages()
         }
     },
     methods: {
         appendNewPage(index){
-            this.document.appendNewPage(index)
+            this.document.appendPage(new TxPage(), index)
         },
         movingBlock(e){
             let pages = this.$refs.pages
@@ -41,25 +42,29 @@ export default {
             let pages = this.$refs.pages
             pages.forEach(p => p.insertBlock(e, block))
         },
-        dragBlock(e, block, blockRect){ //开始放置块
+        dragBlock(e, block, currentTarget){ //开始放置块
             //构建块
-            let moveBlock = document.createElement("div")
+            let moveBlock = currentTarget.cloneNode(true)
+            let blockRect = currentTarget.getBoundingClientRect()
             let blockLeft, blockTop
-            moveBlock.className = "moving-template-block"
-            if (blockRect){
-                blockTop = blockRect.top
-                blockLeft = blockRect.left
-            } else { //以鼠标为中心
-                blockTop = e.clientY - 25
-                blockLeft = e.clientX - 40
-            }
-            moveBlock.style.width = '80px'
-            moveBlock.style.height = '50px'
+            blockTop = e.clientY
+            blockLeft = e.clientX
+            moveBlock.style.position = "fixed"
+            moveBlock.style.width = blockRect.width + 'px'
+            moveBlock.style.height = blockRect.height + 'px'
             moveBlock.style.top = blockTop + 'px'
             moveBlock.style.left = blockLeft + 'px'
-            
+            moveBlock.classList.add("moving-template-block")
             document.body.appendChild(moveBlock)
+            if (blockRect){
+                moveBlock.style.transform = `translate(${blockRect.left - blockLeft}px, ${blockRect.top - blockTop}px)`
+                setTimeout(_ => {
+                    moveBlock.style.transform = ""
+                }, 1)
+            }
             
+            document.body.style.cursor = "move"
+
             //记录初始数据
             let startX = e.clientX
             let startY = e.clientY
@@ -99,28 +104,31 @@ export default {
             let pages = this.$refs.pages
             pages.forEach(p => p.insertElement(e, element, offsets))
         },
-        dragElement(e, element, elementRect){
+        dragElement(e, element, currentTarget){
             //构建元素
-            let moveBlock = document.createElement("div")
+            let moveElement = currentTarget.cloneNode(true)
+            let elementRect = currentTarget.getBoundingClientRect()
             let blockLeft, blockTop
-            moveBlock.className = "moving-template-block"
+            blockTop = e.clientY
+            blockLeft = e.clientX
+
+            moveElement.style.width = element.size.width + 'px'
+            moveElement.style.height = element.size.height + 'px'
+            moveElement.style.top = blockTop + 'px'
+            moveElement.style.left = blockLeft + 'px'
+            moveElement.classList.add("moving-template-block")
+            document.body.appendChild(moveElement)
             if (elementRect){
-                blockTop = elementRect.top
-                blockLeft = elementRect.left
-            } else { //以鼠标为中心
-                blockTop = e.clientY - element.size.width / 2
-                blockLeft = e.clientX - element.size.height / 2
+                moveElement.style.transform = `translate(${elementRect.left - blockLeft}px, ${elementRect.top - blockTop}px)`
+                setTimeout(_ => {
+                    moveElement.style.transform = ""
+                }, 1)
             }
-            moveBlock.style.width = element.size.width + 'px'
-            moveBlock.style.height = element.size.height + 'px'
-            moveBlock.style.top = blockTop + 'px'
-            moveBlock.style.left = blockLeft + 'px'
-            
+
             let offsets = {
                 top: e.clientY - blockTop,
                 left: e.clientX - blockLeft
             }
-            document.body.appendChild(moveBlock)
             
             //记录初始数据
             let startX = e.clientX
@@ -132,13 +140,13 @@ export default {
                 let nowBlockPositionX = e.clientX - startX + startBlockPositionX
                 let nowBlockPositionY = e.clientY - startY + startBlockPositionY
 
-                moveBlock.style.left = nowBlockPositionX + 'px'
-                moveBlock.style.top = nowBlockPositionY + 'px'
+                moveElement.style.left = nowBlockPositionX + 'px'
+                moveElement.style.top = nowBlockPositionY + 'px'
                 this.movingElement(e, element, offsets)
             }
 
             let mouseup = e => {
-                moveBlock.parentElement.removeChild(moveBlock)
+                moveElement.parentElement.removeChild(moveElement)
                 document.removeEventListener("selectstart", disSelect)
                 document.removeEventListener("mousemove", mousemove)
                 document.removeEventListener("mouseup", mouseup)
@@ -190,10 +198,10 @@ export default {
 
 <style lang="less">
 .moving-template-block{
-    cursor: move;
     z-index: 100;
+    margin: 0;
     position: fixed;
-    background: red;
+    transition: transform .3s;
     pointer-events: none;
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
     <div ref="page" class="template-page" :style="pageStyle">
-        <template v-for="(block,index) in page.blocks">
+        <template v-for="(block,index) in page.getBlocks()">
             <hr v-if="insertBlockState && insertBlockIndex === index" :key="index" />
             <TemplateBlock ref="blocks" :key="index" :block="block"
-                @drag="dragBlock(index, arguments[0])" @delete="deleteBlock(index)" 
+                @drag="dragBlock(index, arguments[0], arguments[1])" @delete="deleteBlock(index)" 
                 @element-move="elementMove" @element-active="elementActive"></TemplateBlock>
         </template>
-        <hr v-if="insertBlockState && insertBlockIndex === page.blocks.length" :key="page.blocks.length" />            
+        <hr v-if="insertBlockState && insertBlockIndex === page.getBlocks().length" :key="page.getBlocks().length" />            
     </div>
 </template>
 
@@ -32,22 +32,13 @@ export default {
     },
     computed: {
         pageStyle(){
-            let pageSize = this.pageSize
+            let pageSize = this.page.size
             return {
                 width: pageSize.width + 'px',
                 minHeight: pageSize.height + 'px',
                 padding: '20px'
             }
-        },
-        pageSize(){
-            let size = this.page.size
-            if (size === "A4"){
-                return {
-                    width: 794,
-                    height: 1123
-                }
-            }
-        },
+        }
     },
     methods: {
         movingBlock(e){
@@ -76,17 +67,15 @@ export default {
         insertBlock(e, block){
             this.movingBlock(e)
             if (this.insertBlockState){
-                this.page.blocks.splice(this.insertBlockIndex, 0, block)
+                this.page.appendBlock(block, this.insertBlockIndex)
                 this.insertBlockState = false
             }
         },
-        dragBlock(index, e){
-            let block = this.page.blocks[index]
-            this.deleteBlock(index)
-            this.$emit("dragBlock", e, block)
+        dragBlock(index, e, target){
+            this.$emit("dragBlock", e, this.page.removeBlock(index), target)
         },
         deleteBlock(index){
-            this.page.blocks.splice(index, 1)
+            this.page.removeBlock(index)
         },
         movingElement(e, element, offsets){
             let blocks = this.$refs.blocks
@@ -100,8 +89,8 @@ export default {
                 blocks.forEach(b => b.insertElement(e, element, offsets))
             }
         },
-        elementMove(e, element, rect){
-            this.$emit("element-move", e, element, rect)
+        elementMove(e, element, currentTarget){
+            this.$emit("element-move", e, element, currentTarget)
         },
         elementActive(element){
             this.$emit("element-active", element)

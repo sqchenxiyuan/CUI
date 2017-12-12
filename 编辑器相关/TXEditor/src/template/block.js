@@ -1,26 +1,22 @@
-import uuidv4 from 'uuid/v4'
-
+import TxBaseElement from './base.js'
 import Element from './element.js'
 
-class Block{
+class TxBlock extends TxBaseElement{
     constructor(){
-        this.id = uuidv4()
+        super()
         this.height = 30
         this.margin = 10
         this.padding = 3
-
-        this._elements = []//元素数组
     }
 
     appendElement(element){
-        element.setParent(this)
-        this._elements.push(element)
+        this.appendChild(element)
     }
 
     removeElement(element){
         let index
-        if (element instanceof Element){
-            index = this._elements.findIndex(e => e === element)
+        if (typeof element !== "number"){
+            index = this.children.findIndex(e => e === element)
             if (index < 0){
                 throw "元素不存在于当前块"
                 return
@@ -28,17 +24,16 @@ class Block{
         } else {
             index = element
         }
-
-        this._elements.splice(index, 1)
+        this.removeChild(index)
     }
 
     getElementsCount(){
-        return this._elements.length
+        return this.children.length
     }
 
     getElements(){
-        return this._elements
+        return this.children
     }
 }
 
-export default Block
+export default TxBlock

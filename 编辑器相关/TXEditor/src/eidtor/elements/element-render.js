@@ -1,12 +1,11 @@
-import Element from "@template/element.js"
-
+import TxBaseElement from "@template/base.js"
 import TxImageElement from './image-element.vue'
 
 export default {
     functional: true,
     props: {
         element: {
-            type: Element,
+            type: TxBaseElement,
             required: true
         }
     },
@@ -14,7 +13,7 @@ export default {
         let component
         let element = context.props.element
         switch (element.eType){
-            case 1: 
+            case 101: 
                 component = TxImageElement
                 break
         }

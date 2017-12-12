@@ -1,17 +1,28 @@
-import Page from './page'
-import uuidv4 from 'uuid/v4'
+import TxBaseElement from './base.js'
+import TxPage from './page.js'
 
-class Document{
+class TxDocument extends TxBaseElement{
     constructor(){
-        this.id = uuidv4()
-        this.pages = []
-        this.pages.push(new Page())
+        super()
+        this.type = 1
+        this.appendPage(new TxPage())
     }
 
-    appendNewPage(index){
-        this.pages.splice(index, 0, new Page())
+    getPages(){
+        return this.children.filter(c => c instanceof TxPage)
     }
 
+    appendPage(page, index = this.children.length){
+        if (page instanceof TxPage){
+            this.appendChild(page, index)
+        } else {
+            throw new TypeError("page must be a TxPage")
+        }
+    }
+
+    removePage(index){
+        this.removeChild(index)
+    }
 }
 
-export default Document
+export default TxDocument

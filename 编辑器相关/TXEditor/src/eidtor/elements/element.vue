@@ -82,8 +82,9 @@ export default {
             document.addEventListener("selectstart", disSelect)
         },
         moveElement(e){
-            let mousemove = _ => {
-                this.$emit("move", e, this.$el.getBoundingClientRect())
+            let currentTarget = e.currentTarget
+            let mousemove = e => {
+                this.$emit("move", e, currentTarget)
                 document.removeEventListener("selectstart", disSelect)
                 document.removeEventListener("mousemove", mousemove)
                 document.removeEventListener("mouseup", mouseup)

@@ -6,7 +6,7 @@
                     <div class="template-block" @mousedown="createBlock">空块</div>
                 </el-collapse-item>
                 <el-collapse-item title="元素" name="elements">
-                    <div class="template-block" @mousedown="createElement($event, 1)">图片</div>
+                    <div class="template-block" @mousedown="createElement($event, 101)">图片</div>
                 </el-collapse-item>
             </el-collapse>
         </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Document from './template/document.js'
+import TxDocument from './template/document.js'
 import Block from './template/block.js'
 import {
     Element,
@@ -42,24 +42,24 @@ export default {
         }
     },
     created(){
-        this.document = new Document()
+        this.document = new TxDocument()
     },
     methods: {
         appendNewPage(index){
             this.template.appendNewPage(index)
         },
         createBlock(e){ //开始放置块
-            this.$refs.document.dragBlock(e, new Block(), e.target.getBoundingClientRect())
+            this.$refs.document.dragBlock(e, new Block(), e.currentTarget)
         },
         createElement(e, type){ //放置图片元素
             let element
             switch (type) {
-                case 1:
+                case 101:
                     element = new ImageElement()
                     break
             }
             if (!element) return 
-            this.$refs.document.dragElement(e, element, e.target.getBoundingClientRect())
+            this.$refs.document.dragElement(e, element, e.currentTarget)
         },
         elementActive(element){
             this.activeElement = element

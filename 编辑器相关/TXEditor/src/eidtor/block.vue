@@ -5,7 +5,7 @@
             <div :style="{opacity:state > 0 ? 1:0}" class="tx-block-delete-handler" @click="deleteBlock"></div>
             <span v-if="block.getElementsCount() === 0 && !insertElementObj" style="color:#888">拖入元素{{block.id}}</span>
             <template v-if="insertElementObj">
-                <TxElementRender :element="insertElementObj"></TxElementRender>
+                <!-- <TxElementRender :element="insertElementObj"></TxElementRender> -->
             </template>
             <TxElementRender v-for="element in block.getElements()" :key="element.id" :element="element"
                 @resize="elementResize(element, arguments[0])" @move="elementMove(element, arguments[0], arguments[1])" @active="elementActive(element)"></TxElementRender>
@@ -62,7 +62,7 @@ export default {
             }
         },
         dragBlock(e){
-            this.$emit("drag", e)
+            this.$emit("drag", e, this.$el)
         },
         deleteBlock(){
             this.$emit("delete")
@@ -81,14 +81,14 @@ export default {
                     left: left - padding
                 }
 
-                this.insertElementObj = element
+                this.insertingElement = true
             } else {
-                this.insertElementObj = null
+                this.insertingElement = false
             }
         },
         insertElement(e, element, offsets = {top: 0, left: 0}){
             this.movingElement(e, element, offsets)
-            if (this.insertElementObj){
+            if (this.insertingElement){
                 let blockRect = this.$refs.blockinner.getBoundingClientRect()
                 let top = element.position.top
                 let left = element.position.left
@@ -109,8 +109,8 @@ export default {
                 element.position = {top, left}
                 element.size = {width, height}
 
-                this.block.appendElement(this.insertElementObj)
-                this.insertElementObj = null
+                this.block.appendElement(element)
+                this.insertingElement = false
             }
             this.computeHeight()
         },
@@ -124,9 +124,9 @@ export default {
             element.size.height = size.height
             this.computeHeight()
         },
-        elementMove(element, e, rect){
-            element.remove()
-            this.$emit("element-move", e, element, rect)
+        elementMove(element, e, currentTarget){
+            this.block.removeElement(element)
+            this.$emit("element-move", e, element, currentTarget)
         },
         computeHeight(){
             let elements = this.block.getElements()
