@@ -84,6 +84,7 @@ export default {
         moveElement(e){
             let currentTarget = e.currentTarget
             let mousemove = e => {
+                if (e.movementX === 0 || e.movementY === 0) return
                 this.$emit("move", e, currentTarget)
                 document.removeEventListener("selectstart", disSelect)
                 document.removeEventListener("mousemove", mousemove)

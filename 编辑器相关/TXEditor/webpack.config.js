@@ -63,7 +63,8 @@ module.exports = {
         alias: {
             'vue$': 'vue/dist/vue.min.js',
             '@src': path.resolve(__dirname, './src'),
-            '@template': '@src/template'
+            '@template': '@src/template',
+            '@util': '@src/util'
         }
     },
     devServer: {

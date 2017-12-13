@@ -42,7 +42,7 @@ export default {
             let pages = this.$refs.pages
             pages.forEach(p => p.insertBlock(e, block))
         },
-        dragBlock(e, block, currentTarget){ //开始放置块
+        dragBlock(e, block, currentTarget, repoint = true){ //开始放置块
             //构建块
             let moveBlock = currentTarget.cloneNode(true)
             let blockRect = currentTarget.getBoundingClientRect()
@@ -56,13 +56,13 @@ export default {
             moveBlock.style.left = blockLeft + 'px'
             moveBlock.classList.add("moving-template-block")
             document.body.appendChild(moveBlock)
-            if (blockRect){
-                moveBlock.style.transform = `translate(${blockRect.left - blockLeft}px, ${blockRect.top - blockTop}px)`
+            
+            moveBlock.style.transform = `translate(${blockRect.left - blockLeft}px, ${blockRect.top - blockTop}px)`
+            if (repoint){
                 setTimeout(_ => {
                     moveBlock.style.transform = ""
                 }, 1)
             }
-            
             document.body.style.cursor = "move"
 
             //记录初始数据
@@ -85,6 +85,7 @@ export default {
                 document.removeEventListener("selectstart", disSelect)
                 document.removeEventListener("mousemove", mousemove)
                 document.removeEventListener("mouseup", mouseup)
+                document.body.style.cursor = ""
                 this.insertBlock(e, block)
             }
 
@@ -104,7 +105,7 @@ export default {
             let pages = this.$refs.pages
             pages.forEach(p => p.insertElement(e, element, offsets))
         },
-        dragElement(e, element, currentTarget){
+        dragElement(e, element, currentTarget, repoint = true){
             //构建元素
             let moveElement = currentTarget.cloneNode(true)
             let elementRect = currentTarget.getBoundingClientRect()
@@ -118,17 +119,25 @@ export default {
             moveElement.style.left = blockLeft + 'px'
             moveElement.classList.add("moving-template-block")
             document.body.appendChild(moveElement)
-            if (elementRect){
-                moveElement.style.transform = `translate(${elementRect.left - blockLeft}px, ${elementRect.top - blockTop}px)`
+            
+            moveElement.style.transform = `translate(${elementRect.left - blockLeft}px, ${elementRect.top - blockTop}px)`
+            
+            let offsets = {
+                top: e.clientY - elementRect.top,
+                left: e.clientX - elementRect.left
+            }
+            
+            if (repoint){
+                offsets = {
+                    top: 0,
+                    left: 0
+                }
+
                 setTimeout(_ => {
                     moveElement.style.transform = ""
                 }, 1)
             }
-
-            let offsets = {
-                top: e.clientY - blockTop,
-                left: e.clientX - blockLeft
-            }
+            
             
             //记录初始数据
             let startX = e.clientX
@@ -151,6 +160,7 @@ export default {
                 document.removeEventListener("mousemove", mousemove)
                 document.removeEventListener("mouseup", mouseup)
                 this.insertElement(e, element, offsets)
+                document.body.style.cursor = ""
             }
 
             let disSelect = function(e){

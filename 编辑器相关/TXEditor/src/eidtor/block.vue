@@ -117,11 +117,10 @@ export default {
         elementResize(element, size){
             let block = this.$refs.blockinner
             let blockRect = block.getBoundingClientRect()
+            
+            if (element.position.left + element.size.width > blockRect.width) size.width = blockRect.width - element.position.left
 
-            if (element.position.left + size.width > block.width) size.width = block.width - element.position.left
-
-            element.size.width = size.width
-            element.size.height = size.height
+            element.setSize(size)
             this.computeHeight()
         },
         elementMove(element, e, currentTarget){

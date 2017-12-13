@@ -51,12 +51,12 @@ export default {
     computed: {
         elementTypeName(){
             switch (this.element.eType){
-                case 1: return "图片元素"
+                case 102: return "图片元素"
             }
         },
         infoElement(){
             switch (this.element.eType){
-                case 1: return TxImageElementInfo
+                case 102: return TxImageElementInfo
             }
         }
     },

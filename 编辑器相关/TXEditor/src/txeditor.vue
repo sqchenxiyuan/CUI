@@ -6,6 +6,7 @@
                     <div class="template-block" @mousedown="createBlock">空块</div>
                 </el-collapse-item>
                 <el-collapse-item title="元素" name="elements">
+                    <div class="template-block" @mousedown="createElement($event, 100)">文本</div>
                     <div class="template-block" @mousedown="createElement($event, 101)">图片</div>
                 </el-collapse-item>
             </el-collapse>
@@ -24,7 +25,6 @@
 import TxDocument from './template/document.js'
 import Block from './template/block.js'
 import {
-    Element,
     TextElement,
     ImageElement
 } from './template/element.js'
@@ -54,6 +54,9 @@ export default {
         createElement(e, type){ //放置图片元素
             let element
             switch (type) {
+                case 100:
+                    element = new TextElement()
+                    break
                 case 101:
                     element = new ImageElement()
                     break

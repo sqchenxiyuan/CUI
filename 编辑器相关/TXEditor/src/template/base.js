@@ -9,8 +9,9 @@ import uuidv4 from 'uuid/v4'
 2：  页面      PAGE
 3：  页面块    BLOCK
 100：  文本      TEXT
-101：  图片      IMAGE
-102：  表格      TABLE
+101：  字符      CHAR
+102：  图片      IMAGE
+103：  表格      TABLE
 103：变量      VARIABLE
 201：签名框    SIGNATUER
 202：签章框    SEAL
@@ -24,6 +25,10 @@ class TxBaseElement{
         this.children = []
         this.size = null //尺寸 某些可能不需要
         this.position = null //位置 某些可能不需要
+    }
+
+    update(){
+        console.log("没有定义")
     }
 
     /**
@@ -47,6 +52,11 @@ class TxBaseElement{
      */
     removeChild(index = -1){
         return this.children.splice(index, 1)[0]
+    }
+
+    setSize(size){
+        this.size = size
+        this.update()
     }
 
 }

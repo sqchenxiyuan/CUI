@@ -11,14 +11,14 @@
 </template>
 
 <script>
-import Element from "@template/element.js"
+import TxBaseElement from "@template/base.js"
 
 import TxElement from "./element.vue"
 
 export default {
     props: {
         element: {
-            type: Element,
+            type: TxBaseElement,
             required: true
         }
     },

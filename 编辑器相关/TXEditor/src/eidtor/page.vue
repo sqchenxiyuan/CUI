@@ -90,7 +90,7 @@ export default {
             }
         },
         elementMove(e, element, currentTarget){
-            this.$emit("element-move", e, element, currentTarget)
+            this.$emit("element-move", e, element, currentTarget, false)
         },
         elementActive(element){
             this.$emit("element-active", element)
