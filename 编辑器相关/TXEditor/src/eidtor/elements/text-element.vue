@@ -32,20 +32,46 @@ export default {
     computed: {
         cursorStyle() {
             let x = 0, y = 0, h = 14
-            if (this.cursorIndex === 0){
-                let h
-                if (this.element.getChars().length > 0){
-                    let char = this.element.getChars()[0]
-                    h = char.size.width
-                }
-            } else {
-                let char = this.element.getChars()[this.cursorIndex - 1]
-                if (char){
-                    x = char.position.left + char.size.width
-                    y = char.position.top
-                    h = char.size.height
+            let cursorIndex = this.cursorIndex
+            let lines = this.element.getLines()
+            let chars = this.element.getChars()
+
+            let charCount = 0
+            let lineIndex = 0
+            let line = null
+            for (lineIndex = 0; lineIndex < lines.length; lineIndex++){
+                line = lines[lineIndex]
+                let count = line.gerCharCount()
+                if (charCount <= cursorIndex && cursorIndex < charCount + count){
+                    break
+                } else {
+                    charCount += count
                 }
             }
+
+            let char = line.getCharAt(cursorIndex - charCount)
+            console.log(cursorIndex, charCount, char)
+            if (char){ //存在该字符
+                x = char.position.left
+                y = char.position.top
+                h = char.size.height
+                console.log(char)
+            } else { //不存在直接使用默认
+                char = chars[chars.length - 1]
+                if (char){
+                    if (char.char === '\n'){
+                        line = lines[lineIndex + 1]
+                        x = line.position.left
+                        y = line.position.top
+                        h = line.size.height
+                    } else {
+                        x = char.position.left + char.size.width
+                        y = char.position.top
+                        h = char.size.height
+                    }
+                }
+            }
+            console.log(x, y, h)
             return {
                 left: x + 'px',
                 top: y + 'px',
@@ -62,17 +88,22 @@ export default {
             let oldLength = this.element.getChars().length
             this.$refs.textarea.value = ""
             text.split("").forEach(c => {
-                this.element.appendChar(new CharElement(c), this.cursorIndex)
+                this.textAppendChar(c)
             })
-            this.cursorIndex += this.element.getChars().length - oldLength
+        },
+        textAppendChar(c){
+            this.element.appendChar(c, this.cursorIndex)
+            console.log(this.cursorIndex)
+            this.cursorIndex = this.cursorIndex + 1
+            console.log(this.cursorIndex)
+            
         },
         focusText(e){
-            console.log(e)
             if (e){
                 let chars = this.element.getChars()
                 let rect = this.$refs.textContainer.getBoundingClientRect()
                 let x = e.clientX - rect.left, y = e.clientY - rect.top
-                let mainIndex = null
+                let mainIndex = 0
                 let minDistance = Infinity
                 chars.forEach((c, index) => {
                     if (minDistance === 0) return
@@ -90,9 +121,9 @@ export default {
                         }
                     }
                 })
+                this.$refs.textarea.focus()
                 this.cursorIndex = mainIndex
             }
-            this.$refs.textarea.focus()
         },
         resizeElement(size){
             this.$emit("resize", size)
@@ -109,10 +140,19 @@ export default {
                 case 39://右方向键
                     nextIndex++
                     break
+                case 13://回车键
+                    this.textAppendChar('\n')
+                    e.stopPropagation()
+                    e.preventDefault()
+                    return
+                default:
+                    return
             }
+            e.stopPropagation()
+            e.preventDefault()
 
             if (nextIndex < 0) nextIndex = 0
-            else if (nextIndex > this.element.getChars().length) nextIndex = this.element.getChars().length
+            else if (nextIndex > this.element.getChars().length + 1) nextIndex = this.element.getChars().length + 1
 
             if (this.cursorIndex === nextIndex) return
             this.cursorIndex = nextIndex
