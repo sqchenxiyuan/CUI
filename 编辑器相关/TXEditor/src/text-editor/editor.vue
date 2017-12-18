@@ -1,5 +1,5 @@
 <template>
-    <div class="tx-td-container" ref="textContainer" @click="activeText">
+    <div class="tx-td-container" ref="textContainer" @click="activeText" @mousedown="mousedown">
         <p v-for="(section,index) in sections" :key="index" class="tx-td-section" :style="{
                 top:section.view.top + 'px',
                 left:section.view.left + 'px'
@@ -11,8 +11,15 @@
                 <TxdSpan v-for="(char,index) in line.getChars()" :key="index" :span="char"></TxdSpan>
             </span>
         </p>
+        <div v-for="(rect,index) in selectRects" :key="'rect_'+index" class="tx-td-selectblock" :style="{
+                top:rect.top + 'px',
+                left:rect.left + 'px',
+                width:rect.width + 'px',
+                height:rect.height + 'px',
+            }"></div>
         <div v-if="cursorIndex >= 0" class="tx-td-cursor" :key="Math.random()" :style="cursorStyle"></div>
-        <textarea ref="textarea" class="tx-td-textarea" :style="cursorStyle" @input="inputText" @keydown="keydown"></textarea>
+        <textarea ref="textarea" class="tx-td-textarea" :style="cursorStyle" @input="inputText" 
+            @keydown="keydown" @copy="copy" @paste="paste" @blur="textareablur"></textarea>
     </div>
 </template>
 
@@ -30,8 +37,9 @@ export default {
     data(){
         return {
             text: new Text(),
-            cursorIndex: 0,
+            cursorIndex: -1,
             cursorWarp: true, //换行的开头，光标是在上一行还是这一行   true为这一行 false为上一行
+            selectRange: null,
             chars: []
         }
     },
@@ -46,6 +54,12 @@ export default {
                 left: view.left + 'px',
                 height: view.height + 'px',
             }
+        },
+        selectRects(){
+            let selectRange = this.selectRange
+            if (!selectRange) return []
+            let rects = this.text.getRangeRects(selectRange)
+            return rects
         }
     },
     created(){
@@ -54,6 +68,39 @@ export default {
         })
     },
     methods: {
+        mousedown(e){
+            e.stopPropagation()
+            e.preventDefault()
+            this.activeText(e)
+            this.selectRange = [this.cursorIndex, this.cursorIndex]
+            
+            //记录初始数据
+            let startX = e.clientX
+            let startY = e.clientY
+            let nowX = e.clientX
+            let nowY = e.clientY
+
+            let mousemove = e => {
+                let nowX = e.clientX
+                let nowY = e.clientY
+                this.activeText(e)
+                this.selectRange.splice(1, 1, this.cursorIndex)
+            }
+
+            let mouseup = e => {
+                document.removeEventListener("selectstart", disSelect)
+                document.removeEventListener("mousemove", mousemove)
+                document.removeEventListener("mouseup", mouseup)
+            }
+
+            let disSelect = function(e){
+                e.returnValue = false
+            }
+            
+            document.addEventListener("mouseup", mouseup)
+            document.addEventListener("mousemove", mousemove)
+            document.addEventListener("selectstart", disSelect)
+        },
         activeText(e){
             let rect = this.$refs.textContainer.getBoundingClientRect()
             let x = e.clientX - rect.left
@@ -97,9 +144,29 @@ export default {
                 e.preventDefault()
             }
             if (code === 8){
-                this.cursorIndex = this.text.deleteChar(this.cursorIndex)
+                if (this.selectRange){
+                    this.cursorIndex = this.text.deleteCharsInRange(this.selectRange)
+                    this.selectRange = null
+                } else {
+                    this.cursorIndex = this.text.deleteChar(this.cursorIndex)
+                }
                 this.text.computeSections()
             }
+        },
+        copy(e){
+            let chars = this.text.getCharsInRange(this.selectRange)
+            let text = chars.map(c => c.value).join("")
+            e.clipboardData.setData('text/plain', text)
+            e.preventDefault()
+        },
+        paste(e){
+            let text = e.clipboardData.getData('text/plain')
+            this.cursorIndex = this.text.appendChars(text, this.cursorIndex)
+            this.text.computeSections()
+            e.preventDefault()
+        },
+        textareablur(e){
+            this.cursorIndex = -1
         }
     },
     components: {
@@ -115,6 +182,7 @@ export default {
     width: 100px;
     height: 100px;
     border: 1px solid black;
+    // overflow: auto;
 }
 
 .tx-td-textarea{
@@ -152,5 +220,11 @@ export default {
     100%{
         opacity: 0;
     }
+}
+
+.tx-td-selectblock{
+    z-index: -1;
+    position: absolute;
+    background: rgba(0,0,0,0.3);
 }
 </style>

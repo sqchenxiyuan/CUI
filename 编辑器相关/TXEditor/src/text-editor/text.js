@@ -1,4 +1,4 @@
-import { S_IFBLK } from "constants"
+import { S_IFBLK, SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG, ERANGE } from "constants"
 
 class Text{
     constructor(){
@@ -27,6 +27,19 @@ class Text{
 
     appendChar(char, index = this._chars.length, charStyle = new CharStyle()){
         this._chars.splice(index, 0, new Char(char, charStyle))
+    }
+
+    getCharsInRange(range){
+        if (range[0] === range[1]){
+            return []
+        }
+        
+        if (range[0] > range[1]){
+            range = [range[1], range[0]]
+        }
+
+        let chars = this._chars
+        return chars.slice(range[0], range[1])
     }
 
     getSections(){
@@ -203,6 +216,20 @@ class Text{
         return index - 1
     }
 
+    //删除一个范围内的字符
+    deleteCharsInRange(range){
+        if (range[0] === range[1]){
+            return this.deleteChar(range[0])
+        }
+
+        if (range[0] > range[1]){
+            range = [range[1], range[0]]
+        }
+
+        this._chars.splice(range[0], range[1] - range[0])
+        return range[0]
+    }
+
     //获取光标的位置
     getCursorIndexByPoint(point){ //在文档中的位置
         if (!point) return 0
@@ -283,6 +310,25 @@ class Text{
             return index
         }
 
+    }
+
+    //获取一个范围的矩形
+    getRangeRects(range){
+        if (range[0] === range[1]){
+            return []
+        }
+        
+        if (range[0] > range[1]){
+            range = [range[1], range[0]]
+        }
+
+        let chars = this._chars
+        let rects = []
+        for (let i = range[0]; i < range[1]; i++){
+            rects.push(chars[i].getViewInText())
+        }
+
+        return rects
     }
 }
 
