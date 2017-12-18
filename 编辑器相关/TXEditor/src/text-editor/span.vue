@@ -19,7 +19,8 @@ export default {
                 height: span.view.height + 'px',
                 fontSize: style.fontSize + 'px',
                 lineHeight: style.fontSize + 'px',
-                fontFamily: style.fontFamily
+                fontFamily: style.fontFamily,
+                fontWeight: style.fontWeight,
             }
         }
     }

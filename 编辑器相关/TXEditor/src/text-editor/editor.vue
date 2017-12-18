@@ -1,5 +1,5 @@
 <template>
-    <div class="tx-td-container" ref="textContainer" @click="activeText" @mousedown="mousedown">
+    <div class="tx-td-container" ref="textContainer" @click.stop.prevent="" @mousedown="mousedown">
         <p v-for="(section,index) in sections" :key="index" class="tx-td-section" :style="{
                 top:section.view.top + 'px',
                 left:section.view.left + 'px'
@@ -17,7 +17,7 @@
                 width:rect.width + 'px',
                 height:rect.height + 'px',
             }"></div>
-        <div v-if="cursorIndex >= 0" class="tx-td-cursor" :key="Math.random()" :style="cursorStyle"></div>
+        <div v-if="cursorActive" class="tx-td-cursor" :key="Math.random()" :style="cursorStyle"></div>
         <textarea ref="textarea" class="tx-td-textarea" :style="cursorStyle" @input="inputText" 
             @keydown="keydown" @copy="copy" @paste="paste" @blur="textareablur"></textarea>
     </div>
@@ -25,6 +25,7 @@
 
 <script>
 import Text from "./text.js"
+import { CharStyle } from "./text.js"
 
 import TxdSpan from './span.vue'
 
@@ -32,12 +33,16 @@ export default {
     props: {
         initData: {
             default: ""
+        },
+        charStyle: {
+            default: new CharStyle()
         }
     },
     data(){
         return {
             text: new Text(),
-            cursorIndex: -1,
+            cursorActive: false,
+            cursorIndex: 0,
             cursorWarp: true, //换行的开头，光标是在上一行还是这一行   true为这一行 false为上一行
             selectRange: null,
             chars: []
@@ -81,10 +86,12 @@ export default {
             let nowY = e.clientY
 
             let mousemove = e => {
-                let nowX = e.clientX
-                let nowY = e.clientY
-                this.activeText(e)
-                this.selectRange.splice(1, 1, this.cursorIndex)
+                let dX = e.clientX - startX
+                let dY = e.clientY - startY
+                if (dX * dX + dY * dY > 10){ //避免抖动
+                    this.activeText(e)
+                    this.selectRange.splice(1, 1, this.cursorIndex)
+                }
             }
 
             let mouseup = e => {
@@ -102,21 +109,26 @@ export default {
             document.addEventListener("selectstart", disSelect)
         },
         activeText(e){
-            let rect = this.$refs.textContainer.getBoundingClientRect()
-            let x = e.clientX - rect.left
-            let y = e.clientY - rect.top
-            this.cursorWarp = false
-            this.cursorIndex = this.text.getCursorIndexByPoint({
-                x,
-                y
-            })
-
+            if (!this.cursorActive || !e){
+                this.cursorActive = true
+            } else {
+                let rect = this.$refs.textContainer.getBoundingClientRect()
+                let x = e.clientX - rect.left
+                let y = e.clientY - rect.top
+                this.cursorWarp = false
+                this.cursorIndex = this.text.getCursorIndexByPoint({
+                    x,
+                    y
+                })
+                let style = this.text.getCharStyleAt(this.cursorIndex)
+                if (style) this.$emit("styleChange", style)
+            }
             this.$refs.textarea.focus()
         },
         inputText(e){
             let newText = this.$refs.textarea.value
             this.$refs.textarea.value = ""
-            this.cursorIndex = this.text.appendChars(newText, this.cursorIndex)
+            this.cursorIndex = this.text.appendChars(newText, this.cursorIndex, this.charStyle)
             this.text.computeSections()
         },
         keydown(e){
@@ -161,12 +173,12 @@ export default {
         },
         paste(e){
             let text = e.clipboardData.getData('text/plain')
-            this.cursorIndex = this.text.appendChars(text, this.cursorIndex)
+            this.cursorIndex = this.text.appendChars(text, this.cursorIndex, this.charStyle)
             this.text.computeSections()
             e.preventDefault()
         },
         textareablur(e){
-            this.cursorIndex = -1
+            this.cursorActive = false
         }
     },
     components: {

@@ -29,6 +29,14 @@ class Text{
         this._chars.splice(index, 0, new Char(char, charStyle))
     }
 
+    getCharStyleAt(index){
+        if (index < 0) index = 0
+        let char = this._chars[index]
+        if (!char) char = this._chars[this._chars.length - 1]
+        if (!char) return null
+        return char.style.clone()
+    }
+
     getCharsInRange(range){
         if (range[0] === range[1]){
             return []
@@ -487,6 +495,7 @@ class Char{
         this.value = char
         this.style = charStyle.clone()
         this.computeSize()
+        console.log(this.style.fontWeight, this)
     }
 
     setView(view){
@@ -538,16 +547,19 @@ class CharStyle{
         let {
             fontSize = 14, //px为单位
             fontFamily = "Microsoft YaHei",
+            fontWeight = "normal"
         } = options
 
         this.fontSize = fontSize
         this.fontFamily = fontFamily
+        this.fontWeight = fontWeight
     }
 
     clone(){
         return new CharStyle({
             fontSize: this.fontSize,
-            fontFamily: this.fontFamily
+            fontFamily: this.fontFamily,
+            fontWeight: this.fontWeight
         })
     }
 }
@@ -556,6 +568,7 @@ function getCharSize(char, style = new CharStyle()) {
     let {
         fontSize = 14, //px为单位
         fontFamily = "Microsoft YaHei",
+        fontWeight = "normal"
     } = style
 
     let scale = 1 //倍数
@@ -570,6 +583,7 @@ function getCharSize(char, style = new CharStyle()) {
     span.style.lineHeight = `${fontSize}px`
     span.style.display = "inline-block"
     span.style.fontFamily = fontFamily
+    span.style.fontWeight = fontWeight
     if (scale !== 1) span.style.transform = `scale(${scale})`
     document.body.appendChild(span)
     let rect = span.getBoundingClientRect()
@@ -592,3 +606,6 @@ function encodeCharToHTML(char){
 }
 
 export default Text
+export {
+    CharStyle
+}
