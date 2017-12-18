@@ -26,7 +26,11 @@ class Text{
     }
 
     appendChar(char, index = this._chars.length, charStyle = new CharStyle()){
+        if (index < 0) index = 0
+        if (index > this._chars.length) index = this._chars.length
+
         this._chars.splice(index, 0, new Char(char, charStyle))
+        return index + 1
     }
 
     getCharStyleAt(index){
@@ -483,7 +487,7 @@ class Line{
 }
 
 class Char{
-    constructor(char, charStyle = new charStyle()){
+    constructor(char, charStyle = new CharStyle()){
         this.view = {
             top: 0,
             left: 0,
@@ -493,9 +497,11 @@ class Char{
 
         this.line = null
         this.value = char
+
+        if (!(charStyle instanceof CharStyle)) charStyle = new CharStyle(charStyle)
         this.style = charStyle.clone()
+        
         this.computeSize()
-        console.log(this.style.fontWeight, this)
     }
 
     setView(view){

@@ -25,7 +25,7 @@ export default {
         }
     },
     watch: {
-        charStyle:{
+        charStyle: {
             deep: true,
             handler(){
                 this.$refs.text.activeText()

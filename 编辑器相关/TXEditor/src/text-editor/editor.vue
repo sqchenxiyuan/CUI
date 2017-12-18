@@ -168,12 +168,32 @@ export default {
         copy(e){
             let chars = this.text.getCharsInRange(this.selectRange)
             let text = chars.map(c => c.value).join("")
+            let json = chars.map(c => {
+                return {
+                    value: c.value,
+                    style: c.style
+                }
+            })
             e.clipboardData.setData('text/plain', text)
+            e.clipboardData.setData('json/tx', JSON.stringify(json))
             e.preventDefault()
         },
         paste(e){
-            let text = e.clipboardData.getData('text/plain')
-            this.cursorIndex = this.text.appendChars(text, this.cursorIndex, this.charStyle)
+            if (e.clipboardData.types.find(t => t === "json/tx")){
+                try {
+                    let chars = JSON.parse(e.clipboardData.getData('json/tx'))
+                    let lastIndex
+                    chars.forEach((c, index) => {
+                        lastIndex = this.text.appendChar(c.value, this.cursorIndex + index, c.style)
+                    })
+                    this.cursorIndex = lastIndex
+                } catch (e){
+                    console.error(e)
+                }
+            } else {
+                let text = e.clipboardData.getData('text/plain')
+                this.cursorIndex = this.text.appendChars(text, this.cursorIndex, this.charStyle)
+            }
             this.text.computeSections()
             e.preventDefault()
         },
