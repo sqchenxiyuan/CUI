@@ -1,16 +1,6 @@
 <template>
     <div class="tx-td-container" ref="textContainer" @click.stop.prevent="" @mousedown="mousedown">
-        <p v-for="(section,index) in sections" :key="index" class="tx-td-section" :style="{
-                top:section.view.top + 'px',
-                left:section.view.left + 'px'
-            }">
-            <span v-for="(line,index) in section.getLines()" :key="index" class="tx-td-line" :style="{
-                top:line.view.top + 'px',
-                left:line.view.left + 'px'
-            }">
-                <TxdSpan v-for="(char,index) in line.getChars()" :key="index" :span="char"></TxdSpan>
-            </span>
-        </p>
+        <TxdSpan v-for="(char,index) in renderedChars" :key="index" :span="char"></TxdSpan>
         <div v-for="(rect,index) in selectRects" :key="'rect_'+index" class="tx-td-selectblock" :style="{
                 top:rect.top + 'px',
                 left:rect.left + 'px',
@@ -24,8 +14,11 @@
 </template>
 
 <script>
-import Text from "./text.js"
-import { CharStyle } from "./text.js"
+import TextRender from "./text.js"
+import { 
+    TextChar,
+    TextVariable,
+    CharStyle } from "./text.js"
 
 import TxdSpan from './span.vue'
 
@@ -40,7 +33,7 @@ export default {
     },
     data(){
         return {
-            text: new Text(),
+            text: new TextRender(),
             cursorActive: false,
             cursorIndex: 0,
             cursorWarp: true, //换行的开头，光标是在上一行还是这一行   true为这一行 false为上一行
@@ -49,8 +42,8 @@ export default {
         }
     },
     computed: {
-        sections(){
-            return this.text.getSections()
+        renderedChars(){
+            return this.text.getRenderedChars()
         },
         cursorStyle(){
             let view = this.text.getCursorPositon(this.cursorIndex, this.cursorWarp)
@@ -116,10 +109,15 @@ export default {
                 let x = e.clientX - rect.left
                 let y = e.clientY - rect.top
                 this.cursorWarp = false
-                this.cursorIndex = this.text.getCursorIndexByPoint({
+                let {
+                    index,
+                    text
+                } = this.text.getCursorIndexByPoint({
                     x,
                     y
                 })
+                this.cursorIndex = index
+
                 let style = this.text.getCharStyleAt(this.cursorIndex)
                 if (style) this.$emit("styleChange", style)
             }
@@ -128,8 +126,12 @@ export default {
         inputText(e){
             let newText = this.$refs.textarea.value
             this.$refs.textarea.value = ""
-            this.cursorIndex = this.text.appendChars(newText, this.cursorIndex, this.charStyle)
-            this.text.computeSections()
+            let texts = newText.split("").map(char => {
+                return new TextChar(char, this.charStyle.clone())
+            })
+            this.selectRange = null
+            this.cursorIndex = this.text.appendTexts(texts, this.cursorIndex)
+            this.text.renderChars()
         },
         keydown(e){
             let code = e.keyCode
@@ -157,44 +159,47 @@ export default {
             }
             if (code === 8){
                 if (this.selectRange){
-                    this.cursorIndex = this.text.deleteCharsInRange(this.selectRange)
+                    this.cursorIndex = this.text.deleteTextsInRange(this.selectRange)
                     this.selectRange = null
                 } else {
-                    this.cursorIndex = this.text.deleteChar(this.cursorIndex)
+                    this.cursorIndex = this.text.deleteText(this.cursorIndex)
                 }
-                this.text.computeSections()
+                this.text.renderChars()
             }
         },
         copy(e){
             let chars = this.text.getCharsInRange(this.selectRange)
             let text = chars.map(c => c.value).join("")
-            let json = chars.map(c => {
-                return {
-                    value: c.value,
-                    style: c.style
-                }
-            })
+            let json = JSON.stringify(chars)
             e.clipboardData.setData('text/plain', text)
-            e.clipboardData.setData('json/tx', JSON.stringify(json))
+            e.clipboardData.setData('json/tx', json)
             e.preventDefault()
         },
         paste(e){
             if (e.clipboardData.types.find(t => t === "json/tx")){
                 try {
-                    let chars = JSON.parse(e.clipboardData.getData('json/tx'))
-                    let lastIndex
-                    chars.forEach((c, index) => {
-                        lastIndex = this.text.appendChar(c.value, this.cursorIndex + index, c.style)
+                    let texts = JSON.parse(e.clipboardData.getData('json/tx'))
+                    texts = texts.map((text, index) => {
+                        console.log(text, text.type)
+                        switch (text.type){
+                            case 0: return new TextChar(text.value, text.style)
+                            case 1: return new TextVariable(text.id, text.value, text.style)
+                            default: return new TextChar(text.value, text.style)
+                        }
                     })
-                    this.cursorIndex = lastIndex
+                    console.log(texts)
+                    this.cursorIndex = this.text.appendTexts(texts, this.cursorIndex)
                 } catch (e){
                     console.error(e)
                 }
             } else {
                 let text = e.clipboardData.getData('text/plain')
-                this.cursorIndex = this.text.appendChars(text, this.cursorIndex, this.charStyle)
+                let texts = text.split("").map(char => {
+                    return new TextChar(char, this.charStyle.clone())
+                })
+                this.cursorIndex = this.text.appendTexts(texts, this.cursorIndex)
             }
-            this.text.computeSections()
+            this.text.renderChars()
             e.preventDefault()
         },
         textareablur(e){
@@ -214,7 +219,6 @@ export default {
     width: 100px;
     height: 100px;
     border: 1px solid black;
-    // overflow: auto;
 }
 
 .tx-td-textarea{
