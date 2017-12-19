@@ -14,8 +14,11 @@
         <div :style="{width: activeElement?undefined:0}" class="tx-editor-element-info">
             <TxEditorElementInfoFrame v-if="activeElement" :element="activeElement" @close="activeElement = null"></TxEditorElementInfoFrame>
         </div>
+        <div v-if="textActive" class="editor-document-top-toolbar">
+            <TxStyleToolbar v-if="textActive" :charStyle="charStyle"></TxStyleToolbar>
+        </div>
         <div class="editor-document-preview">
-            <TemplateDocument ref="document" :document="document"
+            <TemplateDocument ref="document" :document="document" :charStyle="charStyle"
                 @element-active="elementActive" @element-cancel-active="activeElement = null"></TemplateDocument>
         </div>
     </div>
@@ -25,6 +28,10 @@
 import TxDocument from './template/document.js'
 import Block from './template/block.js'
 import {
+    CharStyle
+} from "./text-editor/text.js"
+
+import {
     ImageElement,
     TextElement
 } from './template/elements.js'
@@ -32,13 +39,30 @@ import {
 //组件
 import TemplateDocument from './eidtor/document.vue'
 import TxEditorElementInfoFrame from './eidtor/element-info/element-info-frame.vue'
+import TxStyleToolbar from "./eidtor/style-toolbar.vue"
+
+window._textStyleBus = new Vue({
+    data: {
+        activeText: null,
+        charStyle: new CharStyle()
+    }
+})
 
 export default {
     data(){
         return {
             document: null,
             activeNames: "blocks",
-            activeElement: null //当前选中的元素
+            activeElement: null, //当前选中的元素
+        }
+    },
+    computed: {
+        textActive(){
+            if (this.activeElement && this.activeElement.eType === 100) return true
+            return false
+        },
+        charStyle(){
+            return window._textStyleBus.charStyle
         }
     },
     created(){
@@ -70,7 +94,8 @@ export default {
     },
     components: {
         TemplateDocument,
-        TxEditorElementInfoFrame
+        TxEditorElementInfoFrame,
+        TxStyleToolbar
     }
 }
 </script>
@@ -116,6 +141,16 @@ html, body{
         top: 0;
         right: 0;
         bottom: 0;
+    }
+
+    .editor-document-top-toolbar{
+        z-index: 10;
+        position: absolute;
+        left: @toolbar-width;
+        height: 30px;
+        top: 0;
+        right: 0;
+        background: #888888;
     }
 }
 

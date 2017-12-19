@@ -1,6 +1,6 @@
 <template>
     <TxElementFrame :element="element" @resize="resizeElement" @move="moveElement">
-        <TextEditor :textElement="element" :charStyle="charStyle"></TextEditor>
+        <TextEditor ref="editor" :textElement="element" :charStyle="charStyle" @active="active" @styleChange="styleChange"></TextEditor>
     </TxElementFrame>
 </template>
 
@@ -20,14 +20,14 @@ export default {
             required: true
         }
     },
-    watch:{
+    watch: {
         'element.size.height'(){
             this.$emit("resize", this.element.size)
         }
     },
-    data(){
-        return {
-            charStyle: new CharStyle()
+    computed: {
+        charStyle(){
+            return window._textStyleBus.charStyle
         }
     },
     methods: {
@@ -36,6 +36,16 @@ export default {
         },
         moveElement(e, rect){
             this.$emit("move", e, rect)
+        },
+        styleChange(style){
+            window._textStyleBus.charStyle = style
+        },
+        active(){
+            window._textStyleBus.activeText = this
+            this.$emit('active')
+        },
+        activeEditor(){
+            this.$refs.editor.activeText()
         }
     },
     components: {

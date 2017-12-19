@@ -11,8 +11,6 @@ class TextElement extends TxBaseElement{
 
         this.textsData = [] //文本数据集合
     }
-
-    
 }
 
 //图片元素

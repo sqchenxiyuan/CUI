@@ -2,6 +2,7 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 import Txeditor from '@src/txeditor.vue'
+
 new Vue({
     el: "#test",
     template: "<Txeditor></Txeditor>",

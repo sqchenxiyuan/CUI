@@ -23,7 +23,8 @@ import TemplatePage from './page.vue'
 
 export default {
     props: {
-        document: TxDocument
+        document: TxDocument,
+        charStyle: Object
     },
     computed: {
         pages(){

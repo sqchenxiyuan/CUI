@@ -32,14 +32,15 @@
 </template>
 
 <script>
-import Element from "@template/elements.js"
+import TxBaseElement from "@template/base.js"
 
+import TxTextElementInfo from "./text-element-info.vue"
 import TxImageElementInfo from "./image-element-info.vue"
 
 export default {
     props: {
         element: {
-            type: Element,
+            type: TxBaseElement,
             required: true
         }
     },
@@ -51,11 +52,13 @@ export default {
     computed: {
         elementTypeName(){
             switch (this.element.eType){
+                case 100: return "文本元素"                
                 case 102: return "图片元素"
             }
         },
         infoElement(){
             switch (this.element.eType){
+                case 100: return null
                 case 102: return TxImageElementInfo
             }
         }

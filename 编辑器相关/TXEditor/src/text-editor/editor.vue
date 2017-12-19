@@ -38,9 +38,7 @@ export default {
             type: TextElement,
             required: true
         },
-        charStyle: {
-            default: new CharStyle()
-        }
+        charStyle: Object
     },
     data(){
         return {
@@ -153,7 +151,10 @@ export default {
                 let style = this.text.getCharStyleAt(this.cursorIndex)
                 if (style) this.$emit("styleChange", style)
             }
-            this.cursorActive = true
+            if (!this.cursorActive){
+                this.$emit("active")
+                this.cursorActive = true
+            }
             this.$refs.textarea.focus()
         },
         inputText(e){
