@@ -1,5 +1,3 @@
-import { S_IFBLK, SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG, ERANGE } from "constants"
-
 class TextRender{
     //一个只负责排版以及查找光标和选择范围的位置的对象
     //获取字符位置，获取光标位置，插入文本，删除文本
@@ -446,7 +444,7 @@ class TextRender{
     setVariableValueById(id, nv){
         this._texts.forEach(t => {
             console.log(t)
-            if(t.type === 1){
+            if (t.type === 1){
                 console.log(t)
             }
             if (t.id === id){
@@ -592,6 +590,9 @@ class Line{
             })
             width += c.view.width
         })
+
+        if (height === 0) height = 14 //FIXME: 暂时解决空行高度问题
+
         this.setView({
             height
         })

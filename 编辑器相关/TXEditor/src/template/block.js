@@ -1,5 +1,5 @@
 import TxBaseElement from './base.js'
-import Element from './element.js'
+import Element from './elements.js'
 
 class TxBlock extends TxBaseElement{
     constructor(){

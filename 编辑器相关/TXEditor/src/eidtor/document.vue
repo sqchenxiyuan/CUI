@@ -2,12 +2,12 @@
     <div class="document-preview-container" @click="cancelActiveElement">
         <div ref="wheel-event-handler"></div>
         <template v-for="(page, index) in pages" >
-            <div class="append-new-page" v-if="index === 0"  :key="index" @click="appendNewPage(index)">
+            <div class="append-new-page" v-if="index === 0"  :key="'hr' + index" @click="appendNewPage(index)">
                 <hr>
             </div>
-            <TemplatePage ref="pages" :key="index" :page="page"
+            <TemplatePage ref="pages" :key="'page' + index" :page="page"
                 @dragBlock="dragBlock" @element-move="dragElement" @element-active="elementActive"></TemplatePage>
-            <div class="append-new-page" :key="index + 1" @click="appendNewPage(index + 1)">
+            <div class="append-new-page" :key="'new' + index" @click="appendNewPage(index + 1)">
                 <hr>
             </div>
         </template>

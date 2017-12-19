@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import Element from "@template/element.js"
+import Element from "@template/elements.js"
 
 export default {
     props: {

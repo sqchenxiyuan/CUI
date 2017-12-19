@@ -27,10 +27,6 @@ class TxBaseElement{
         this.position = null //位置 某些可能不需要
     }
 
-    update(){
-        console.log("没有定义")
-    }
-
     /**
      * @description 添加子节点
      * @param  {Block} child 需要插入的元素
@@ -56,7 +52,6 @@ class TxBaseElement{
 
     setSize(size){
         this.size = size
-        this.update()
     }
 
 }

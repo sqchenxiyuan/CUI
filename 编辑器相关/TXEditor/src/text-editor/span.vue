@@ -29,6 +29,7 @@ export default {
 
 <style lang="less" scoped>
 .tx-td-span{
+    z-index: 10;
     position: absolute;
 }
 </style>

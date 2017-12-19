@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {CharElement} from "@template/element.js"
+import {CharElement} from "@template/elements.js"
 
 export default {
     props: {

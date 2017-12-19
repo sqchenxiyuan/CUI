@@ -1,12 +1,16 @@
 <template>
-    <div class="tx-td-container" ref="textContainer" @click.stop.prevent="" @mousedown="mousedown">
-        <TxdSpan v-for="(char,index) in renderedChars" :key="index" :span="char"></TxdSpan>
-        <div v-for="(rect,index) in selectRects" :key="'rect_'+index" class="tx-td-selectblock" :style="{
+    <div class="tx-td-container" ref="textContainer" :style="textContainerStyle" @click.stop.prevent="" @mousedown="mousedown">
+        <div class="tx-td-span-container">
+            <TxdSpan v-for="(char,index) in renderedChars" :key="index" :span="char"></TxdSpan>
+        </div>
+        <div class="tx-td-selectblock-container">
+            <div v-for="(rect,index) in selectRects" :key="'rect_'+index" class="tx-td-selectblock" :style="{
                 top:rect.top + 'px',
                 left:rect.left + 'px',
                 width:rect.width + 'px',
                 height:rect.height + 'px',
             }"></div>
+        </div>
         <div v-if="cursorActive" class="tx-td-cursor" :key="Math.random()" :style="cursorStyle"></div>
         <textarea ref="textarea" class="tx-td-textarea" :style="cursorStyle" @input="inputText" 
             @keydown="keydown" @copy="copy" @paste="paste" @blur="textareablur"></textarea>
@@ -14,6 +18,10 @@
 </template>
 
 <script>
+import {
+    TextElement
+} from '../template/elements'
+
 import TextRender from "./text.js"
 import { 
     TextChar,
@@ -24,8 +32,9 @@ import TxdSpan from './span.vue'
 
 export default {
     props: {
-        initData: {
-            default: ""
+        textElement: {
+            type: TextElement,
+            required: true
         },
         charStyle: {
             default: new CharStyle()
@@ -42,6 +51,13 @@ export default {
         }
     },
     computed: {
+        textContainerStyle(){
+            let size = this.textElement.size
+            return {
+                height: size.height + 'px',
+                width: size.width + 'px'
+            }
+        },
         renderedChars(){
             return this.text.getRenderedChars()
         },
@@ -60,9 +76,21 @@ export default {
             return rects
         }
     },
+    watch: {
+        'textElement.size.width'(nv){
+            this.text.setView({
+                width: nv
+            })
+            this.text.renderChars()
+        },
+        'text.view.height'(nv){
+            if (nv > 50) this.textElement.size.height = nv
+            else this.textElement.size.height = 50
+        }
+    },
     created(){
         this.text.setView({
-            width: 100
+            width: this.textElement.size.width
         })
     },
     methods: {
@@ -124,6 +152,7 @@ export default {
             this.$refs.textarea.focus()
         },
         inputText(e){
+            this.deleteTextInRange()
             let newText = this.$refs.textarea.value
             this.$refs.textarea.value = ""
             let texts = newText.split("").map(char => {
@@ -158,10 +187,7 @@ export default {
                 e.preventDefault()
             }
             if (code === 8){
-                if (this.selectRange){
-                    this.cursorIndex = this.text.deleteTextsInRange(this.selectRange)
-                    this.selectRange = null
-                } else {
+                if (!this.deleteTextInRange()){
                     this.cursorIndex = this.text.deleteText(this.cursorIndex)
                 }
                 this.text.renderChars()
@@ -176,11 +202,11 @@ export default {
             e.preventDefault()
         },
         paste(e){
+            this.deleteTextInRange()
             if (e.clipboardData.types.find(t => t === "json/tx")){
                 try {
                     let texts = JSON.parse(e.clipboardData.getData('json/tx'))
                     texts = texts.map((text, index) => {
-                        console.log(text, text.type)
                         switch (text.type){
                             case 0: return new TextChar(text.value, text.style)
                             case 1: return new TextVariable(text.id, text.value, text.style)
@@ -204,6 +230,16 @@ export default {
         },
         textareablur(e){
             this.cursorActive = false
+        },
+        deleteTextInRange(){
+            if (this.selectRange && this.selectRange[0] !== this.selectRange[1]){
+                this.cursorIndex = this.text.deleteTextsInRange(this.selectRange)
+                this.selectRange = null
+                return true
+            } else {
+                this.selectRange = null
+                return false
+            }
         }
     },
     components: {
@@ -218,7 +254,6 @@ export default {
     cursor: text;
     width: 100px;
     height: 100px;
-    border: 1px solid black;
 }
 
 .tx-td-textarea{
@@ -259,7 +294,6 @@ export default {
 }
 
 .tx-td-selectblock{
-    z-index: -1;
     position: absolute;
     background: rgba(0,0,0,0.3);
 }

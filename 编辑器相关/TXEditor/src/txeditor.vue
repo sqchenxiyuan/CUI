@@ -25,9 +25,9 @@
 import TxDocument from './template/document.js'
 import Block from './template/block.js'
 import {
-    ImageElement
-} from './template/element.js'
-import TextElement from './template/text-element.js'
+    ImageElement,
+    TextElement
+} from './template/elements.js'
 
 //组件
 import TemplateDocument from './eidtor/document.vue'
