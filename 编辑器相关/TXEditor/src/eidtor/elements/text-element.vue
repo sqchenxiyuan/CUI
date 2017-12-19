@@ -1,12 +1,12 @@
 <template>
-    <TxElement :element="element" @resize="resizeElement" @move="moveElement">
+    <TxElementFrame :element="element" @resize="resizeElement" @move="moveElement">
         <TextEditor :textElement="element" :charStyle="charStyle"></TextEditor>
-    </TxElement>
+    </TxElementFrame>
 </template>
 
 <script>
 import TxBaseElement from "@template/base.js"
-import TxElement from "./element.vue"
+import TxElementFrame from "./element-frame.vue"
 import TextEditor from "../../text-editor/editor.vue"
 
 import { 
@@ -39,7 +39,7 @@ export default {
         }
     },
     components: {
-        TxElement,
+        TxElementFrame,
         TextEditor,
     }
 }

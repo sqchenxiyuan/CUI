@@ -1,5 +1,5 @@
 <template>
-    <TxElement :element="element" @resize="resizeElement" @move="moveElement" @active="$emit('active')">
+    <TxElementFrame :element="element" @resize="resizeElement" @move="moveElement" @active="$emit('active')">
         <div v-if="!element.imageData" class="tx-image-element-default">
             <div class="tx-image-element-image-reupload" @click="selectFile"></div>
         </div>
@@ -7,13 +7,13 @@
             <img :src="element.imageData" class="tx-image-element-image"/>
             <div class="tx-image-element-image-reupload" @click="selectFile"></div>
         </div>
-    </TxElement>
+    </TxElementFrame>
 </template>
 
 <script>
 import TxBaseElement from "@template/base.js"
 
-import TxElement from "./element.vue"
+import TxElementFrame from "./element-frame.vue"
 
 export default {
     props: {
@@ -55,7 +55,7 @@ export default {
         }
     },
     components: {
-        TxElement
+        TxElementFrame
     }
 }
 </script>

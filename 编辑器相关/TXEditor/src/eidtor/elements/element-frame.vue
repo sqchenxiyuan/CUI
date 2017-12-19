@@ -1,9 +1,10 @@
 <template>
-    <div class="tx-element" :style="elementStyle" @mousedown="moveElement" @click.stop="selectElement">
+    <div class="tx-element" :style="elementStyle" @click.stop="selectElement">
         <div class="tx-element-handles">
             <div class="tx-element-resize-height" @mousedown.stop="resizeElement($event, false, true)"></div>
             <div class="tx-element-resize-width" @mousedown.stop="resizeElement($event, true, false)"></div>
             <div class="tx-element-resize-freedom" @mousedown.stop="resizeElement($event, true, true)"></div>
+            <div class="tx-element-move-handle" @mousedown.stop="moveElement"></div>
         </div>
         <div v-if="resizing" class="tx-element-resize-preview" :style="resizeReviewStyle"></div>
         <slot></slot>
@@ -82,7 +83,7 @@ export default {
             document.addEventListener("selectstart", disSelect)
         },
         moveElement(e){
-            let currentTarget = e.currentTarget
+            let currentTarget = this.$el
             let mousemove = e => {
                 if (e.movementX === 0 || e.movementY === 0) return
                 this.$emit("move", e, currentTarget)
@@ -184,14 +185,14 @@ export default {
     }
 }
 
-.tx-element-move-handler{
+.tx-element-move-handle{
     cursor: move;
     position: absolute;
-    width:10px;
-    height: 10px;
-    top: -5px;
-    left: -5px;
-    background: black;
+    width:20px;
+    height: 20px;
+    top: -15px;
+    left: -15px;
+    background: blue;
 }
 
 .tx-element-resize-preview{

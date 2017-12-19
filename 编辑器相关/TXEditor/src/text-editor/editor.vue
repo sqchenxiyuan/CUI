@@ -2,6 +2,7 @@
     <div class="tx-td-container" ref="textContainer" :style="textContainerStyle" @click.stop.prevent="" @mousedown="mousedown">
         <div class="tx-td-span-container">
             <TxdSpan v-for="(char,index) in renderedChars" :key="index" :span="char"></TxdSpan>
+            <span v-if="renderedChars.length === 0" class="tx-td-selectblock-info">输入内容</span>
         </div>
         <div class="tx-td-selectblock-container">
             <div v-for="(rect,index) in selectRects" :key="'rect_'+index" class="tx-td-selectblock" :style="{
@@ -26,7 +27,8 @@ import TextRender from "./text.js"
 import { 
     TextChar,
     TextVariable,
-    CharStyle } from "./text.js"
+    CharStyle
+} from "./text.js"
 
 import TxdSpan from './span.vue'
 
@@ -42,9 +44,9 @@ export default {
     },
     data(){
         return {
-            text: new TextRender(),
+            text: null,
             cursorActive: false,
-            cursorIndex: 0,
+            cursorIndex: -1,
             cursorWarp: true, //换行的开头，光标是在上一行还是这一行   true为这一行 false为上一行
             selectRange: null,
             chars: []
@@ -89,9 +91,11 @@ export default {
         }
     },
     created(){
+        this.text = new TextRender(this.textElement.textsData)
         this.text.setView({
             width: this.textElement.size.width
         })
+        this.text.renderChars()
     },
     methods: {
         mousedown(e){
@@ -130,8 +134,8 @@ export default {
             document.addEventListener("selectstart", disSelect)
         },
         activeText(e){
-            if (!this.cursorActive || !e){
-                this.cursorActive = true
+            if (!this.cursorActive && this.cursorIndex >= 0 || !e){
+            
             } else {
                 let rect = this.$refs.textContainer.getBoundingClientRect()
                 let x = e.clientX - rect.left
@@ -149,6 +153,7 @@ export default {
                 let style = this.text.getCharStyleAt(this.cursorIndex)
                 if (style) this.$emit("styleChange", style)
             }
+            this.cursorActive = true
             this.$refs.textarea.focus()
         },
         inputText(e){
@@ -213,7 +218,6 @@ export default {
                             default: return new TextChar(text.value, text.style)
                         }
                     })
-                    console.log(texts)
                     this.cursorIndex = this.text.appendTexts(texts, this.cursorIndex)
                 } catch (e){
                     console.error(e)
@@ -296,5 +300,10 @@ export default {
 .tx-td-selectblock{
     position: absolute;
     background: rgba(0,0,0,0.3);
+}
+
+.tx-td-selectblock-info{
+    font-size: 14px;
+    color: #888888;
 }
 </style>

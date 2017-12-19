@@ -2,7 +2,7 @@ class TextRender{
     //一个只负责排版以及查找光标和选择范围的位置的对象
     //获取字符位置，获取光标位置，插入文本，删除文本
 
-    constructor(){
+    constructor(texts){
         this.view = {
             top: 0,
             left: 0,
@@ -10,8 +10,7 @@ class TextRender{
             height: 0
         }
 
-        this._texts = []
-        this._chars = []
+        this._texts = texts
         this.lastRenderResult = { //最近一次渲染排版的结果
             textCharsArr: [],
             chars: [],
