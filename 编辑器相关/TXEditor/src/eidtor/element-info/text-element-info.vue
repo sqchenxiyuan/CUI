@@ -1,11 +1,25 @@
 <template>
-    <el-collapse v-model="activeNames">
-        <el-collapse-item title="文本样式" name="data">
+    <el-collapse v-model="activeNames" @click.native="clickText">
+        <el-collapse-item title="变量集合" name="data">
+            <el-row v-for="variable in variables" :key="variable.id">
+                <el-col :span="5">
+                    {{variable.id}}:
+                </el-col>
+                <el-col :span="14">
+                    <el-input @click.native.stop="" v-model="variable.value" placeholder=""></el-input>
+                </el-col>
+                <el-col :span="5">
+                    <el-button type="" @click="appendVariable(variable)">插入</el-button>
+                </el-col>
+            </el-row>
+            <el-button type="success" @click="createVariable">新建变量</el-button>
         </el-collapse-item>
     </el-collapse>
 </template>
 
 <script>
+import { TextVariable } from "../../text-editor/text.js"
+
 import TxBaseElement from "@template/base.js"
 
 export default {
@@ -20,10 +34,29 @@ export default {
             activeNames: ""
         }
     },
+    computed: {
+        variables(){
+            return window._textStyleBus.variables
+        },
+        activeText(){
+            return window._textStyleBus.activeText
+        }
+    },
     created(){
     },
     methods: {
-    },
+        createVariable(){
+            return window._textStyleBus.variables.push(new TextVariable())
+        },
+        clickText(){
+            this.$nextTick(_ => {
+                window._textStyleBus.activeText.activeEditor()
+            })
+        },
+        appendVariable(v){
+            window._textStyleBus.activeText.appendVariable(v)
+        }
+    }
 }
 </script>
 

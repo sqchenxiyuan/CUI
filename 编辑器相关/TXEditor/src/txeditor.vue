@@ -44,6 +44,7 @@ import TxStyleToolbar from "./eidtor/style-toolbar.vue"
 window._textStyleBus = new Vue({
     data: {
         activeText: null,
+        variables: [],
         charStyle: new CharStyle()
     }
 })

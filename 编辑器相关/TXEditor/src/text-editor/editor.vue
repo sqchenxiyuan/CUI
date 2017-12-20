@@ -96,6 +96,9 @@ export default {
         this.text.renderChars()
     },
     methods: {
+        render(){
+            this.text.renderChars()
+        },
         mousedown(e){
             e.stopPropagation()
             e.preventDefault()
@@ -168,6 +171,12 @@ export default {
             this.cursorIndex = this.text.appendTexts(texts, this.cursorIndex)
             this.text.renderChars()
         },
+        appendText(text){
+            this.deleteTextInRange()
+            this.selectRange = null
+            this.cursorIndex = this.text.appendText(text, this.cursorIndex)
+            this.text.renderChars()
+        },
         keydown(e){
             let code = e.keyCode
             if (code >= 37 && code <= 40){
@@ -215,7 +224,7 @@ export default {
                     texts = texts.map((text, index) => {
                         switch (text.type){
                             case 0: return new TextChar(text.value, text.style)
-                            case 1: return new TextVariable(text.id, text.value, text.style)
+                            // case 1: return new TextVariable(text.id, text.value, text.style)
                             default: return new TextChar(text.value, text.style)
                         }
                     })
@@ -235,6 +244,7 @@ export default {
         },
         textareablur(e){
             this.cursorActive = false
+            this.$emit("disactive")
         },
         deleteTextInRange(){
             if (this.selectRange && this.selectRange[0] !== this.selectRange[1]){

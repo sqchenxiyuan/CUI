@@ -2,7 +2,7 @@
     <div ref="page" class="template-page" :style="pageStyle">
         <template v-for="(block,index) in page.getBlocks()">
             <hr v-if="insertBlockState && insertBlockIndex === index" :key="index" />
-            <TemplateBlock ref="blocks" :key="index" :block="block"
+            <TemplateBlock ref="blocks" :key="'block' + index" :block="block"
                 @drag="dragBlock(index, arguments[0], arguments[1])" @delete="deleteBlock(index)" 
                 @element-move="elementMove" @element-active="elementActive"></TemplateBlock>
         </template>

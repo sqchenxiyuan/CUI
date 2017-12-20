@@ -761,7 +761,7 @@ class TextVariable extends TextBase{
     constructor(id, value, charStyle = new CharStyle()){
         super(value, charStyle)
         this.type = 1
-        this.id = id
+        this.id = id || parseInt(Math.random() * 100000)
         this.value = value
         this.style = new CharStyle({fontWeight: "bold"})
     }

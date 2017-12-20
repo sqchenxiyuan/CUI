@@ -58,7 +58,7 @@ export default {
         },
         infoElement(){
             switch (this.element.eType){
-                case 100: return null
+                case 100: return TxTextElementInfo
                 case 102: return TxImageElementInfo
             }
         }

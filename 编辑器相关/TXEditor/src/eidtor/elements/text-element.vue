@@ -1,6 +1,7 @@
 <template>
     <TxElementFrame :element="element" @resize="resizeElement" @move="moveElement">
-        <TextEditor ref="editor" :textElement="element" :charStyle="charStyle" @active="active" @styleChange="styleChange"></TextEditor>
+        <TextEditor ref="editor" :textElement="element" :charStyle="charStyle" 
+            @active="active" @styleChange="styleChange"></TextEditor>
     </TxElementFrame>
 </template>
 
@@ -23,11 +24,20 @@ export default {
     watch: {
         'element.size.height'(){
             this.$emit("resize", this.element.size)
+        },
+        'variables': {
+            deep: true,
+            handler(){
+                this.$refs.editor.render()
+            }
         }
     },
     computed: {
         charStyle(){
             return window._textStyleBus.charStyle
+        },
+        variables(){
+            return window._textStyleBus.variables
         }
     },
     methods: {
@@ -39,6 +49,9 @@ export default {
         },
         styleChange(style){
             window._textStyleBus.charStyle = style
+        },
+        appendVariable(variable){
+            this.$refs.editor.appendText(variable)
         },
         active(){
             window._textStyleBus.activeText = this
